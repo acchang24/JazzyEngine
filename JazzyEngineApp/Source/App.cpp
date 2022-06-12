@@ -63,8 +63,8 @@ void App::Init()
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
-	mShader->Load(L"../JazzyEngine/Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));
-	mShader->Load(L"../JazzyEngine/Shaders/PixelShader.hlsl", ShaderType::Pixel, ied, sizeof(ied) / sizeof(ied[0]));
+	mShader->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));
+	mShader->Load(L"Shaders/PixelShader.hlsl", ShaderType::Pixel, ied, sizeof(ied) / sizeof(ied[0]));
 
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(Vertex), indices, sizeof(indices), sizeof(uint16_t)), mShader);

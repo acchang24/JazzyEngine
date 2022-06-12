@@ -15,68 +15,81 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application\Source\Main.cpp">
+    <ClCompile Include="Source\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\stdafx.cpp">
+    <ClCompile Include="Source\DbgAssert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\DbgAssert.cpp">
+    <ClCompile Include="Source\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\App.cpp">
+    <ClCompile Include="Source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\Window.cpp">
+    <ClCompile Include="Source\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\WindowException.cpp">
+    <ClCompile Include="Source\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\Keyboard.cpp">
+    <ClCompile Include="Source\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Source\Mouse.cpp">
+    <ClCompile Include="Source\WindowException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\Source\stdafx.h">
+    <ClInclude Include="Source\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\DbgAssert.h">
+    <ClInclude Include="Source\DbgAssert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\App.h">
+    <ClInclude Include="Source\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\Window.h">
+    <ClInclude Include="Source\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\WindowException.h">
+    <ClInclude Include="Source\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\Keyboard.h">
+    <ClInclude Include="Source\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\Mouse.h">
+    <ClInclude Include="Source\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Source\Resource.h">
+    <ClInclude Include="Source\WindowException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Application\Source\Engine.aps" />
+    <None Include="Shaders\ShaderConstants.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Application\Source\Engine.rc">
+    <ResourceCompile Include="Source\Engine.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Application\Source\game.ico">
+    <Image Include="Source\game.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\CubePS.hlsl" />
+    <FxCompile Include="Shaders\CubeVS.hlsl" />
+    <FxCompile Include="Shaders\PixelShader.hlsl" />
+    <FxCompile Include="Shaders\VertexShader.hlsl" />
   </ItemGroup>
 </Project>

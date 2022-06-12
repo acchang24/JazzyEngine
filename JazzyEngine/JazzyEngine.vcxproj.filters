@@ -42,9 +42,6 @@
     <ClInclude Include="Source\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -74,20 +71,8 @@
     <ClCompile Include="Source\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\VertexShader.hlsl" />
-    <FxCompile Include="Shaders\CubePS.hlsl" />
-    <FxCompile Include="Shaders\CubeVS.hlsl" />
-    <FxCompile Include="Shaders\PixelShader.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\ShaderConstants.hlsli" />
   </ItemGroup>
 </Project>
