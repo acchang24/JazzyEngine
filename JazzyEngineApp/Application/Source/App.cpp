@@ -163,12 +163,12 @@ int App::Run()
 			start = end;
 
 			fps = (int)(1.0f / deltaTime);
-			/*std::ostringstream oss;
+			std::ostringstream oss;
 			oss << "FPS: " << fps;
 			std::string str = oss.str();
 			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			std::wstring ws = converter.from_bytes(str);
-			wnd->SetTitle(ws);*/
+			wnd->SetTitle(ws);
 
 			Update(deltaTime);
 			RenderFrame();

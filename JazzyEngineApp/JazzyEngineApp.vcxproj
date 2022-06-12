@@ -179,6 +179,15 @@
     <ClInclude Include="Application\Source\Keyboard.h" />
     <ClInclude Include="Application\Source\Mouse.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Application\Source\Engine.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Application\Source\Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Application\Source\game.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
