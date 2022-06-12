@@ -11,7 +11,7 @@ int APIENTRY wWinMain(
 {
 	Vector3 testVector = Vector3(12.0f, 2.0f, 123.0f);
 
-	testVector.x;
+	testVector.z;
 
 	return 0;
 }
