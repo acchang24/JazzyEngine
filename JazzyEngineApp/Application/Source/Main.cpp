@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "EngineMath.h"
-
-#include <iostream>
+#include "Window.h"
+#include "Exception.h"
+#include "App.h"
+#include <iomanip>
+#include <codecvt>
 
 int APIENTRY wWinMain(
 	_In_ HINSTANCE hInstance,
@@ -9,9 +11,19 @@ int APIENTRY wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nCmdShow)
 {
-	Vector3 testVector = Vector3(12.0f, 2.0f, 123.0f);
-
-	testVector.z;
-
-	return 0;
+	bool running = true;
+	float time = 0.0f;
+	try
+	{
+		return App{}.Run();
+	}
+	catch (const Exception& e)
+	{
+		MessageBoxW(nullptr, e.What().c_str(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (...)
+	{
+		MessageBoxW(nullptr, L"No details available", L"Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
+	}
+	return -1;
 }

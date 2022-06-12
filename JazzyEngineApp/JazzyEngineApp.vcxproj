@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../JazzyEngine/Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../JazzyEngine/Source;../</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../JazzyEngine/Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../JazzyEngine/Source;../</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../JazzyEngine/Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../JazzyEngine/Source;../</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../JazzyEngine/Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../JazzyEngine/Source;../</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Source\App.cpp" />
     <ClCompile Include="Application\Source\DbgAssert.cpp" />
     <ClCompile Include="Application\Source\Main.cpp" />
     <ClCompile Include="Application\Source\stdafx.cpp">
@@ -163,10 +164,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Application\Source\Window.cpp" />
+    <ClCompile Include="Application\Source\WindowException.cpp" />
+    <ClCompile Include="Application\Source\Keyboard.cpp" />
+    <ClCompile Include="Application\Source\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Source\App.h" />
     <ClInclude Include="Application\Source\DbgAssert.h" />
+    <ClInclude Include="Application\Source\Resource.h" />
     <ClInclude Include="Application\Source\stdafx.h" />
+    <ClInclude Include="Application\Source\Window.h" />
+    <ClInclude Include="Application\Source\WindowException.h" />
+    <ClInclude Include="Application\Source\Keyboard.h" />
+    <ClInclude Include="Application\Source\Mouse.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
