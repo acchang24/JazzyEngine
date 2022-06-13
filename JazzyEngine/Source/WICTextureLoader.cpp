@@ -785,7 +785,15 @@ namespace
         if (texture || textureView)
         {
             CHAR strFileA[MAX_PATH];
-            const int result = 1;
+            const int result = WideCharToMultiByte(CP_UTF8,
+                WC_NO_BEST_FIT_CHARS,
+                fileName,
+                -1,
+                strFileA,
+                MAX_PATH,
+                nullptr,
+                nullptr
+            );
             if (result > 0)
             {
                 const char* pstrName = strrchr(strFileA, '\\');
