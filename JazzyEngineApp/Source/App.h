@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "ImGuiManager.h"
 
 // App is the main class that starts the game loop/engine
 
@@ -28,6 +29,8 @@ public:
 	void AddRenderObj(RenderObj* obj);
 
 private:
+	ImGuiManager imgui;
+
 	RenderObj* testCube;
 
 	std::vector<RenderObj*> renderObjects;

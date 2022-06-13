@@ -8,6 +8,9 @@
 #include "RenderObj.h"
 #include "Cube.h"
 #include "Texture.h"
+#include "imgui\imgui.h"
+#include "imgui\imgui_impl_win32.h"
+#include "imgui\imgui_impl_dx11.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -250,7 +253,7 @@ void App::Update(float deltaTime)
 	testCube2->mObjConsts.modelToWorld = transform1;
 	testCube3->mObjConsts.modelToWorld = transform2;*/
 	Matrix4 transform = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 4.0f))
+		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 6.0f))
 		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 0.75f, 0.5f, 40.0f);
 	transform.Transpose();
 	testCube->mObjConsts.modelToWorld = transform;
@@ -276,6 +279,24 @@ void App::RenderFrame()
 	{
 		o->Draw();
 	}
+
+	// ImGui
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		static bool show_demo_window = true;
+		if (show_demo_window)
+		{
+			ImGui::ShowDemoWindow(&show_demo_window);
+		}
+
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	}
+	
+
 
 	g->EndFrame();
 }
