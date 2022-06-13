@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineMath.h"
 
 class Color4
 {
@@ -16,4 +17,10 @@ struct Vertex
 {
     float x, y, z;
     Color4 color;
+};
+
+struct VertexTexture
+{
+    float x, y, z;
+    float u, v;
 };

@@ -59,6 +59,10 @@ Graphics::~Graphics()
 	{
 		mDepthTexture->Release();
 	}
+	if (mSamplerState)
+	{
+		mSamplerState->Release();
+	}
 
 #ifdef _DEBUG
 	pDbg->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
@@ -142,6 +146,24 @@ void Graphics::InitD3D(HWND hWnd, float width, float height)
 
 		// Create Depth Stencil
 		CreateDepthStencil((int)width, (int)height, &mDepthTexture, &mDepthStencilView);
+	}
+
+	// Sampler State
+	{
+		D3D11_SAMPLER_DESC sampDesc = {};
+		ZeroMemory(&sampDesc, sizeof(sampDesc));
+		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		sampDesc.MinLOD = 0;
+		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		// Initialize Sampler State
+		mDevice->CreateSamplerState(&sampDesc, &mSamplerState);
+		// Set Active Sampler
+		SetActiveSampler(0, mSamplerState);
 	}
 }
 
@@ -303,7 +325,7 @@ void Graphics::SetActiveTexture(int slot, ID3D11ShaderResourceView* pView)
 	mContext->PSSetShaderResources(slot, 1, &pView);
 }
 
-void Graphics::SetSamplerState(int slot, ID3D11SamplerState* pSampler)
+void Graphics::SetActiveSampler(int slot, ID3D11SamplerState* pSampler)
 {
 	mContext->PSSetSamplers(slot, 1, &pSampler);
 }

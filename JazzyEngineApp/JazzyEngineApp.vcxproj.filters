@@ -91,5 +91,7 @@
     <FxCompile Include="Shaders\CubeVS.hlsl" />
     <FxCompile Include="Shaders\PixelShader.hlsl" />
     <FxCompile Include="Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Shaders\TexturedVS.hlsl" />
+    <FxCompile Include="Shaders\TexturedPS.hlsl" />
   </ItemGroup>
 </Project>

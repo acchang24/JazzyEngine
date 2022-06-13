@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "RenderObj.h"
 #include "Cube.h"
+#include "Texture.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -26,16 +27,16 @@ App::~App()
 
 void App::Init()
 {
-	const Vertex vertices[] =
+	const VertexTexture vertices[] =
 	{
-		{ -1.0f, -1.0f, -1.0f, Color4(1.0f, 0.0f, 0.0f, 1.0f)},
-		{ 1.0f, -1.0f, -1.0f, Color4(0.0f, 1.0f, 0.0f, 1.0f)},
-		{ -1.0f, 1.0f, -1.0f, Color4(0.0f, 0.0f, 1.0f, 1.0f)},
-		{ 1.0f, 1.0f, -1.0f, Color4(1.0f, 1.0f, 0.0f, 1.0f)},
-		{ -1.0f, -1.0f, 1.0f, Color4(1.0f, 0.0f, 1.0f, 1.0f)},
-		{ 1.0f, -1.0f, 1.0f, Color4(0.0f, 1.0f, 1.0f, 1.0f)},
-		{ -1.0f, 1.0f, 1.0f, Color4(0.0f, 0.0f, 0.0f, 1.0f)},
-		{ 1.0f, 1.0f, 1.0f, Color4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{ -1.0f, -1.0f, -1.0f, 0.0f, 0.0f},
+		{ 1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
+		{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f},
+		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
+		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ -1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
 	};
 
 	const uint16_t indices[] =
@@ -54,6 +55,9 @@ void App::Init()
 		1, 5, 4,
 	};
 
+	hoovy = new Texture();
+	hoovy->Load(L"Assets/Textures/hoovy.jpg");
+
 	// Shader
 	Shader* mShader = new Shader();
 
@@ -62,18 +66,23 @@ void App::Init()
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
+	const D3D11_INPUT_ELEMENT_DESC tex[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
 
-	mShader->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));
-	mShader->Load(L"Shaders/PixelShader.hlsl", ShaderType::Pixel, ied, sizeof(ied) / sizeof(ied[0]));
+	mShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, tex, sizeof(tex) / sizeof(tex[0]));
+	mShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, tex, sizeof(tex) / sizeof(tex[0]));
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(Vertex), indices, sizeof(indices), sizeof(uint16_t)), mShader);
+	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mShader);
 	AddRenderObj(testCube);
-	for (int i = 0; i < 80; i++)
-	{
-		Cube* newCube = new Cube();
-		AddRenderObj(newCube);
-	}
+	//for (int i = 0; i < 80; i++)
+	//{
+	//	Cube* newCube = new Cube();
+	//	AddRenderObj(newCube);
+	//}
 
 }
 
@@ -89,6 +98,7 @@ void App::ShutDown()
 	{
 		mConstColorBuffer->Release();
 	}
+	delete hoovy;
 
 	// Delete/release stuff before window
 	if (wnd)
@@ -232,6 +242,8 @@ void App::RenderFrame()
 
 		g->ClearDepthBuffer(g->GetDepthStencilView(), 1.0f);
 	}
+
+	hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 
 	for (auto o : renderObjects)
 	{

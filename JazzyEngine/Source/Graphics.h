@@ -9,6 +9,25 @@ class Shader;
 class Graphics
 {
 public:
+	class Color4
+	{
+	public:
+		Color4()
+			: r(0), g(0), b(0), a(0)
+		{}
+		Color4(float _r, float _g, float _b, float _a = 1.0f)
+			: r(_r), g(_g), b(_b), a(_a)
+		{}
+		float r, g, b, a;
+	};
+
+	enum TextureSlot
+	{
+		TEXTURE_SLOT_DIFFUSE,
+
+		TEXTURE_SLOT_TOTAL
+	};
+
 
 	enum ConstantBuffer
 	{
@@ -63,7 +82,7 @@ public:
 
 	void SetActiveTexture(int slot, ID3D11ShaderResourceView* pView);
 
-	void SetSamplerState(int slot, ID3D11SamplerState* pSampler);
+	void SetActiveSampler(int slot, ID3D11SamplerState* pSampler);
 
 private:
 	static Graphics* sGraphics;

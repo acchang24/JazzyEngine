@@ -6,6 +6,7 @@
 class Shader;
 class RenderObj;
 class Cube;
+class Texture;
 
 class App
 {
@@ -32,6 +33,8 @@ private:
 	std::vector<RenderObj*> renderObjects;
 
 	ID3D11Buffer* mConstColorBuffer;
+
+	Texture* hoovy = nullptr;
 
 	float angle = 0.0f;
 	float zoom = 0.0f;

@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include "Graphics.h"
-#include "DirectXTK\Inc\DDSTextureLoader.h"
-#include "DirectXTK\Inc\WICTextureLoader.h"
+#include "WICTextureLoader.h"
 
 Texture::Texture()
 	: mResource(nullptr)
@@ -41,15 +40,17 @@ bool Texture::Load(const WCHAR* filename)
 
 	ID3D11Device* dev = Graphics::Get()->GetDevice();
 
+
 	std::wstring fileStr(filename);
 	// Check the file extention of the image
 	std::wstring extention = fileStr.substr(fileStr.find_last_of('.'));
 	HRESULT hr = E_FAIL;
-	if (extention == L".dds" || extention == L".DDS")
-		// Create from dds file
-		hr = DirectX::CreateDDSTextureFromFile(dev, filename, &mResource, &mView);
-	else
-		hr = DirectX::CreateWICTextureFromFile(dev, filename, &mResource, &mView);
+	hr = DirectX::CreateWICTextureFromFile(dev, filename, &mResource, &mView);
+	//if (extention == L".dds" || extention == L".DDS")
+	//	// Create from dds file
+	//	hr = DirectX::CreateDDSTextureFromFile(dev, filename, &mResource, &mView);
+	//else
+	//	hr = DirectX::CreateWICTextureFromFile(dev, filename, &mResource, &mView);
 	DbgAssert(hr == S_OK, "Could not create a texture from file");
 	if (hr != S_OK)
 		return false;
