@@ -33,26 +33,53 @@ void App::Init()
 		{ 1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
 		{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f},
 		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
+
 		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ -1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
+		{ -1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+		{ -1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
+
+		{ -1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+		{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f},
+		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, -1.0f, 1.0f, 1.0f, 0.0f},
+
+		
+		{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
 		{ 1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
+
+		{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f},
+		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
 		{ -1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
-		{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
+
+		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
+		{ 1.0f, -1.0f, 1.0f, 1.0f, 0.0f},
+		{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f},
+		{ 1.0f, -1.0f, -1.0f, 1.0f, 1.0f},
 	};
 
 	const uint16_t indices[] =
 	{
 		0, 2, 1,
 		2, 3, 1,
-		1, 3, 5,
-		3, 7, 5,
-		2, 6, 3,
-		3, 6, 7,
-		4, 5, 7,
-		4, 7, 6,
-		0, 4, 2,
-		2, 4, 6,
-		0, 1, 4,
-		1, 5, 4,
+
+		4, 6, 5,
+		6, 7, 5,
+
+		8, 10, 9,
+		10, 11, 9,
+
+		12, 14, 13,
+		14, 15, 13,
+
+		16, 18, 17,
+		18, 19, 17,
+
+		20, 22, 21,
+		22, 23, 21
 	};
 
 	hoovy = new Texture();
@@ -78,11 +105,11 @@ void App::Init()
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mShader);
 	AddRenderObj(testCube);
-	//for (int i = 0; i < 80; i++)
-	//{
-	//	Cube* newCube = new Cube();
-	//	AddRenderObj(newCube);
-	//}
+	for (int i = 0; i < 80; i++)
+	{
+		Cube* newCube = new Cube();
+		AddRenderObj(newCube);
+	}
 
 }
 
