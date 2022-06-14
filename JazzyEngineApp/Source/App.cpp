@@ -286,6 +286,8 @@ void App::RenderFrame()
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		
+
 		static bool show_demo_window = true;
 		if (show_demo_window)
 		{
