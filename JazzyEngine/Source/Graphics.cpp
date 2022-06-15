@@ -64,8 +64,6 @@ Graphics::~Graphics()
 		mSamplerState->Release();
 	}
 
-	ImGui_ImplDX11_Shutdown();
-
 #ifdef _DEBUG
 	pDbg->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 	pDbg->Release();
@@ -167,8 +165,6 @@ void Graphics::InitD3D(HWND hWnd, float width, float height)
 		// Set Active Sampler
 		SetActiveSampler(0, mSamplerState);
 	}
-
-	ImGui_ImplDX11_Init(mDevice, mContext);
 }
 
 

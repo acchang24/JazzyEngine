@@ -2,7 +2,6 @@
 #include "Window.h"
 #include "WindowException.h"
 #include "Resource.h"
-#include "imgui/imgui_impl_win32.h"
 
 // WindowClass
 Window::WindowClass Window::WindowClass::wndClass;
@@ -87,9 +86,6 @@ Window::Window(int width, int height, const wchar_t* name)
 	// Show the window
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 
-	// Init imgui win32 implementation
-	ImGui_ImplWin32_Init(hWnd);
-
 	// Create Graphics object
 	mGraphics = new Graphics();
 	mGraphics->InitD3D(hWnd, (float)width, (float)height);
@@ -97,7 +93,6 @@ Window::Window(int width, int height, const wchar_t* name)
 
 Window::~Window()
 {
-	ImGui_ImplWin32_Shutdown();
 	DestroyWindow(hWnd);
 	delete mKeyboard;
 	delete mMouse;
@@ -138,12 +133,6 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-	{
-		return true;
-	}
-	
-		
 	switch (msg)
 	{
 		// Post quit message when user exits program

@@ -2,7 +2,6 @@
 #include <d3d11.h>
 #include "VertexFormats.h"
 #include "EngineMath.h"
-#include "imgui\imgui_impl_dx11.h"
 
 class RenderObj;
 class Shader;

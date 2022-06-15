@@ -8,9 +8,6 @@
 #include "RenderObj.h"
 #include "Cube.h"
 #include "Texture.h"
-#include "imgui\imgui.h"
-#include "imgui\imgui_impl_win32.h"
-#include "imgui\imgui_impl_dx11.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -279,26 +276,6 @@ void App::RenderFrame()
 	{
 		o->Draw();
 	}
-
-	// ImGui
-	{
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
-		
-
-		static bool show_demo_window = true;
-		if (show_demo_window)
-		{
-			ImGui::ShowDemoWindow(&show_demo_window);
-		}
-
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	}
-	
-
 
 	g->EndFrame();
 }
