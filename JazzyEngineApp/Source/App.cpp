@@ -15,8 +15,9 @@
 App::App()
 	: testCube(nullptr)
 	, mConstColorBuffer(nullptr)
+	, mGraphics(nullptr)
 {
-	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
+	//wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
 }
 
@@ -25,8 +26,13 @@ App::~App()
 
 }
 
-void App::Init()
+void App::Init(HWND hwnd, float width, float height)
 {
+	hWnd = hwnd;
+
+	mGraphics = new Graphics();
+	mGraphics->InitD3D(hwnd, width, height);
+
 	const VertexTexture vertices[] =
 	{
 		{ -1.0f, -1.0f, -1.0f, 0.0f, 0.0f},
@@ -127,17 +133,19 @@ void App::ShutDown()
 	}
 	delete hoovy;
 
+
+	delete mGraphics;
 	// Delete/release stuff before window
-	if (wnd)
+	/*if (wnd)
 	{
 		delete wnd;
-	}
+	}*/
 }
 
 int App::Run()
 {
 	// Initialize all game objects, shaders, etc.
-	Init();
+	//Init();
 
 	MSG msg = {};
 
@@ -152,48 +160,50 @@ int App::Run()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 
-			switch (msg.message)
+			if (msg.message == WM_QUIT)
+				running = false;
+			/*switch (msg.message)
 			{
 			case WM_QUIT:
 				running = false;
 				break;
-			}
+			}*/
 
 			static int i = 0;
-			while (!wnd->mMouse->IsEmpty())
-			{
-				const auto e = wnd->mMouse->Read();
-				switch (e.GetType())
-				{
-					/*case Mouse::Event::Type::Leave:
-						wnd->SetTitle(L"GONE");
-						break;
-					case Mouse::Event::Type::Move:
-						{
-							std::ostringstream oss;
-							oss << "Mouse Position: (" << e.GetX() << ", " << e.GetY() << ")";
-							std::string s = oss.str();
-							std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-							std::wstring ws = converter.from_bytes(s);
-							wnd->SetTitle(ws);
-						}
-						break;*/
-				case Mouse::Event::Type::WheelUp:
-					zoom += 0.2f;
-					break;
-				case Mouse::Event::Type::WheelDown:
-					zoom -= 0.2f;
-					break;
-				}
-			}
+			//while (!wnd->mMouse->IsEmpty())
+			//{
+			//	const auto e = wnd->mMouse->Read();
+			//	switch (e.GetType())
+			//	{
+			//		/*case Mouse::Event::Type::Leave:
+			//			wnd->SetTitle(L"GONE");
+			//			break;
+			//		case Mouse::Event::Type::Move:
+			//			{
+			//				std::ostringstream oss;
+			//				oss << "Mouse Position: (" << e.GetX() << ", " << e.GetY() << ")";
+			//				std::string s = oss.str();
+			//				std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			//				std::wstring ws = converter.from_bytes(s);
+			//				wnd->SetTitle(ws);
+			//			}
+			//			break;*/
+			//	case Mouse::Event::Type::WheelUp:
+			//		zoom += 0.2f;
+			//		break;
+			//	case Mouse::Event::Type::WheelDown:
+			//		zoom -= 0.2f;
+			//		break;
+			//	}
+			//}
 			/*if (wnd->mKeyboard->KeyIsPressed('A'))
 			{
 				MessageBoxW(nullptr, L"Something HapponNN!", L"A Key Was Pressed", MB_OK | MB_ICONEXCLAMATION);
 			}*/
 		}
 
-		if (running)
-		{
+		/*if (running)
+		{*/
 			std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 			double duration = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 			float deltaTime = (float)(0.000000001 * duration);
@@ -205,11 +215,11 @@ int App::Run()
 			std::string str = oss.str();
 			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			std::wstring ws = converter.from_bytes(str);
-			wnd->SetTitle(ws);*/
-
+			SetWindowTextW(hWnd, ws.c_str());*/
+			
 			Update(deltaTime);
 			RenderFrame();
-		}
+		//}
 	}
 
 	ShutDown();
@@ -258,16 +268,14 @@ void App::Update(float deltaTime)
 
 void App::RenderFrame()
 {
-	Graphics* g = wnd->GetGraphics();
-
 	// set render target
-	g->SetBuffer(g->GetBackBuffer(), g->GetDepthStencilView());
+	mGraphics->SetBuffer(mGraphics->GetBackBuffer(), mGraphics->GetDepthStencilView());
 
 	{
 		// clear buffers
-		g->ClearBuffer(0.0f, 0.0f, 0.0f);
+		mGraphics->ClearBuffer(0.0f, 0.0f, 0.0f);
 
-		g->ClearDepthBuffer(g->GetDepthStencilView(), 1.0f);
+		mGraphics->ClearDepthBuffer(mGraphics->GetDepthStencilView(), 1.0f);
 	}
 
 	hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
@@ -277,7 +285,7 @@ void App::RenderFrame()
 		o->Draw();
 	}
 
-	g->EndFrame();
+	mGraphics->EndFrame();
 }
 
 void App::AddRenderObj(RenderObj* obj)

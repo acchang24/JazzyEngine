@@ -81,8 +81,8 @@ void Graphics::InitD3D(HWND hWnd, float width, float height)
 	{
 		DXGI_SWAP_CHAIN_DESC sd;
 		ZeroMemory(&sd, sizeof(sd));
-		sd.BufferDesc.Width = 0;
-		sd.BufferDesc.Height = 0;
+		sd.BufferDesc.Width = static_cast<UINT>(width);
+		sd.BufferDesc.Height = static_cast<UINT>(height);
 		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		sd.BufferDesc.RefreshRate.Numerator = 0;
 		sd.BufferDesc.RefreshRate.Denominator = 0;
@@ -188,7 +188,11 @@ void Graphics::ClearBuffer(float red, float green, float blue)
 
 void Graphics::EndFrame()
 {
-	mSwapChain->Present(1, 0);
+	// Rendering with v-sync
+	//mSwapChain->Present(1, 0);
+	
+	// Rendering without v-sync
+	mSwapChain->Present(0, 0);
 }
 
 ID3D11Buffer* Graphics::CreateGraphicsBuffer(const void* initData, UINT byteWidth, UINT structByteStride, D3D11_BIND_FLAG inBindFlag, D3D11_CPU_ACCESS_FLAG inCPUAccessFlags, D3D11_USAGE inUsage)

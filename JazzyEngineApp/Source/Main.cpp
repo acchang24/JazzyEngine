@@ -4,6 +4,12 @@
 #include "App.h"
 #include <iomanip>
 #include <codecvt>
+#include "Resource.h"
+
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
+
+LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int APIENTRY wWinMain(
 	_In_ HINSTANCE hInstance,
@@ -11,11 +17,57 @@ int APIENTRY wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nCmdShow)
 {
-	bool running = true;
-	float time = 0.0f;
 	try
 	{
-		return App{}.Run();
+        WNDCLASSEX wc = { 
+            sizeof(WNDCLASSEX), 
+            CS_CLASSDC, 
+            WndProc, 
+            0L, 
+            0L, 
+            GetModuleHandle(NULL), 
+            static_cast<HICON>(LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 64, 64, 0)),
+            NULL, 
+            NULL, 
+            NULL, 
+            L"Jazzy Engine",
+            static_cast<HICON>(LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0)) 
+        };
+        
+        
+        RegisterClassEx(&wc);
+        
+        HWND hwnd = ::CreateWindow(
+            wc.lpszClassName,
+            L"Jazzy Engine",
+            WS_OVERLAPPEDWINDOW, 
+            100, 
+            100, 
+            WINDOW_WIDTH, WINDOW_HEIGHT, 
+            NULL, 
+            NULL, 
+            wc.hInstance, 
+            NULL);
+		
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
+
+
+        App app;
+        
+        
+        
+        app.Init(hwnd, (float)1280, (float)720);
+
+      
+
+		int returnCode = app.Run();
+
+
+        ::DestroyWindow(hwnd);
+        ::UnregisterClass(wc.lpszClassName, wc.hInstance);
+
+
+        return returnCode;
 	}
 	catch (const Exception& e)
 	{
@@ -27,6 +79,44 @@ int APIENTRY wWinMain(
 	}
 	return -1;
 }
+
+LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    /*if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;*/
+
+    switch (msg)
+    {
+    /*case WM_SIZE:
+        if (g_pd3dDevice != NULL && wParam != SIZE_MINIMIZED)
+        {
+            CleanupRenderTarget();
+            g_pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
+            CreateRenderTarget();
+        }
+        return 0;*/
+    //case WM_SYSCOMMAND:
+    //    if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+    //        return 0;
+    //    break;
+    case WM_CLOSE:
+        PostQuitMessage(0);
+        return 0;
+    //case WM_DPICHANGED:
+    //    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
+    //    {
+    //        //const int dpi = HIWORD(wParam);
+    //        //printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
+    //        const RECT* suggested_rect = (RECT*)lParam;
+    //        ::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+    //    }
+    //    break;
+    }
+    return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+
+
 
 // Dear ImGui: standalone example application for DirectX 11
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.

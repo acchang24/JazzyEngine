@@ -3,10 +3,9 @@
 
 // App is the main class that starts the game loop/engine
 
-class Shader;
 class RenderObj;
-class Cube;
 class Texture;
+class Graphics;
 
 class App
 {
@@ -16,7 +15,7 @@ public:
 	App(const App&) = delete;
 	App& operator=(const App&) = delete;
 
-	void Init();
+	void Init(HWND hwnd, float width, float height);
 	void ShutDown();
 
 	// Start game loop
@@ -43,6 +42,10 @@ private:
 
 	bool running;
 
-	Window* wnd;
+	Graphics* mGraphics;
+
+	HWND hWnd;
+
+	//Window* wnd;
 };
 
