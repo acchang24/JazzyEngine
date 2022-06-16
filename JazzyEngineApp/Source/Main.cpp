@@ -304,15 +304,15 @@ int APIENTRY wWinMain(
 //    case WM_DESTROY:
 //        ::PostQuitMessage(0);
 //        return 0;
-//    case WM_DPICHANGED:
-//        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
-//        {
-//            //const int dpi = HIWORD(wParam);
-//            //printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
-//            const RECT* suggested_rect = (RECT*)lParam;
-//            ::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
-//        }
-//        break;
+    //case WM_DPICHANGED:
+    //    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
+    //    {
+    //        //const int dpi = HIWORD(wParam);
+    //        //printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
+    //        const RECT* suggested_rect = (RECT*)lParam;
+    //        ::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+    //    }
+    //    break;
 //    }
 //    return ::DefWindowProc(hWnd, msg, wParam, lParam);
 //}

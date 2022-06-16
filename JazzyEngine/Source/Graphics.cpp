@@ -188,7 +188,11 @@ void Graphics::ClearBuffer(float red, float green, float blue)
 
 void Graphics::EndFrame()
 {
-	mSwapChain->Present(1, 0);
+	// Present with v-sync
+	//mSwapChain->Present(1, 0);
+
+	// Present without v-sync
+	mSwapChain->Present(0, 0);
 }
 
 ID3D11Buffer* Graphics::CreateGraphicsBuffer(const void* initData, UINT byteWidth, UINT structByteStride, D3D11_BIND_FLAG inBindFlag, D3D11_CPU_ACCESS_FLAG inCPUAccessFlags, D3D11_USAGE inUsage)

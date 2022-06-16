@@ -2,6 +2,9 @@
 #include "Window.h"
 #include "WindowException.h"
 #include "Resource.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
 
 // WindowClass
 Window::WindowClass Window::WindowClass::wndClass;
@@ -9,6 +12,20 @@ Window::WindowClass Window::WindowClass::wndClass;
 Window::WindowClass::WindowClass()
 	: hInst(GetModuleHandle(nullptr)) // GetModuleHandle to save instance
 {
+	/*WNDCLASSEX wc = { 
+		sizeof(WNDCLASSEX), 
+		CS_CLASSDC, 
+		HandleMsgSetup, 
+		0L, 
+		0L, 
+		GetInstance(), 
+		static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 64, 64, 0)), 
+		nullptr, 
+		nullptr, 
+		nullptr, 
+		GetName(), 
+		static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0)) };*/
+
 	// Register a window class
 	WNDCLASSEXW wc;
 	ZeroMemory(&wc, sizeof(WNDCLASSEX));
@@ -67,7 +84,7 @@ Window::Window(int width, int height, const wchar_t* name)
 	}
 
 	// Create window and get hWnd
-	hWnd = CreateWindowExW(
+	/*hWnd = CreateWindowExW(
 		0,
 		WindowClass::GetName(),
 		name,
@@ -76,7 +93,21 @@ Window::Window(int width, int height, const wchar_t* name)
 		nullptr,
 		nullptr,
 		WindowClass::GetInstance(),
+		this);*/
+
+	hWnd = CreateWindow(
+		L"Engine",
+		L"Jazzy Engine", 
+		WS_OVERLAPPEDWINDOW, 
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		(wr.right - wr.left), 
+		(wr.bottom - wr.top),
+		nullptr, 
+		nullptr, 
+		WindowClass::GetInstance(), 
 		this);
+
+
 	// Check for errror
 	if (hWnd == nullptr)
 	{
@@ -133,6 +164,8 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
 	switch (msg)
 	{
 		// Post quit message when user exits program
@@ -224,6 +257,15 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		mMouse->OnWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
+	case WM_DPICHANGED:
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
+		{
+			//const int dpi = HIWORD(wParam);
+			//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
+			const RECT* suggested_rect = (RECT*)lParam;
+			::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+		}
+		break;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);

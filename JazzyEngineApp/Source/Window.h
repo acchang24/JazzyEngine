@@ -17,6 +17,8 @@ public:
 
 	Graphics* GetGraphics() { return mGraphics; }
 
+	HWND GetHwnd() { return hWnd; }
+
 	Keyboard* mKeyboard;
 	Mouse* mMouse;
 

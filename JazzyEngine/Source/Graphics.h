@@ -49,7 +49,8 @@ public:
 	void ClearBuffer(float red, float green, float blue);
 	ID3D11RenderTargetView* GetBackBuffer() { return mBackBuffer; }
 
-	// Present swap chain
+	IDXGISwapChain* GetSwapchain() { return mSwapChain; }
+
 	void EndFrame();
 
 	// Getters for screen dimensions
