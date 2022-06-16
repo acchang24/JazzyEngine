@@ -263,10 +263,22 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			//const int dpi = HIWORD(wParam);
 			//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
 			const RECT* suggested_rect = (RECT*)lParam;
-			::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+			::SetWindowPos(hWnd, nullptr, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
 		}
 		break;
+	case WM_SIZE:
+		if (mGraphics)
+		{
+			if (mGraphics->GetDevice() != nullptr && wParam != SIZE_MINIMIZED)
+			{
+				mGraphics->CreateRenderTargets((int)LOWORD(lParam), (int)HIWORD(lParam));
+				mGraphics->SetViewport(0.0f, 0.0f, (float)LOWORD(lParam), (float)HIWORD(lParam));
+			}
+		}
+		
+		return 0;
 	}
+
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

@@ -51,6 +51,8 @@ public:
 
 	IDXGISwapChain* GetSwapchain() { return mSwapChain; }
 
+	void CreateRenderTargets(int width, int height);
+
 	void EndFrame();
 
 	// Getters for screen dimensions

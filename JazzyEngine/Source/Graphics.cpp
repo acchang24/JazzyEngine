@@ -96,23 +96,24 @@ void Graphics::InitD3D(HWND hWnd, float width, float height)
 		sd.Windowed = TRUE;
 		sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		sd.Flags = 0;
+		
+		UINT createDeviceFlags = 0;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+		D3D_FEATURE_LEVEL featureLevel;
+		const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
 
 		// Create device, front and back buffers, swap chain, and rendering context
 		hr = D3D11CreateDeviceAndSwapChain(nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
 			nullptr,
-#ifdef _DEBUG
-			D3D11_CREATE_DEVICE_DEBUG,
-#else
-			0,
-#endif
-			nullptr,
-			0,
+			createDeviceFlags,
+			featureLevelArray,
+			2,
 			D3D11_SDK_VERSION,
 			&sd,
 			&mSwapChain,
 			&mDevice,
-			nullptr,
+			&featureLevel,
 			&mContext);
 		DbgAssert(hr == S_OK, "Failed to create device");
 	}
@@ -120,33 +121,35 @@ void Graphics::InitD3D(HWND hWnd, float width, float height)
 	// Set the viewport
 	SetViewport(0.0f, 0.0f, width, height);
 
-	// Grab the back buffer (access texture subresource in swap chain)
-	{
-		ID3D11Resource* pBackBuffer;
-		hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), (LPVOID*)&pBackBuffer);
-		DbgAssert(hr == S_OK, "Something wrong with back buffer");
-		// Create a render target view with that resource
-		hr = mDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mBackBuffer);
-		DbgAssert(hr == S_OK, "Something went wrong while creating a render target view");
-		// Release the temporary resource
-		pBackBuffer->Release();
-	}
+	CreateRenderTargets((int)width, (int)height);
+
+	//// Grab the back buffer (access texture subresource in swap chain)
+	//{
+	//	ID3D11Resource* pBackBuffer;
+	//	hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), (LPVOID*)&pBackBuffer);
+	//	DbgAssert(hr == S_OK, "Something wrong with back buffer");
+	//	// Create a render target view with that resource
+	//	hr = mDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mBackBuffer);
+	//	DbgAssert(hr == S_OK, "Something went wrong while creating a render target view");
+	//	// Release the temporary resource
+	//	pBackBuffer->Release();
+	//}
+	//
+	//// Z Buffer
+	//{
+	//	// Create Depth Stencil State
+	//	ID3D11DepthStencilState* depthState = CreateDepthStencilState(D3D11_COMPARISON_LESS);
+	//	// Set Depth Stencil State
+	//	mContext->OMSetDepthStencilState(depthState, 0);
+	//	// Release depth state
+	//	depthState->Release();
+
+	//	// Create Depth Stencil
+	//	CreateDepthStencil((int)width, (int)height, &mDepthTexture, &mDepthStencilView);
+	//}
 
 	// Draw triangle lists(groups of 3 vertices)
 	mContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Z Buffer
-	{
-		// Create Depth Stencil State
-		ID3D11DepthStencilState* depthState = CreateDepthStencilState(D3D11_COMPARISON_LESS);
-		// Set Depth Stencil State
-		mContext->OMSetDepthStencilState(depthState, 0);
-		// Release depth state
-		depthState->Release();
-
-		// Create Depth Stencil
-		CreateDepthStencil((int)width, (int)height, &mDepthTexture, &mDepthStencilView);
-	}
 
 	// Sampler State
 	{
@@ -322,6 +325,56 @@ bool Graphics::CreateDepthStencil(int inWidth, int inHeight, ID3D11Texture2D** p
 void Graphics::ClearDepthBuffer(ID3D11DepthStencilView* depthView, float depth)
 {
 	mContext->ClearDepthStencilView(depthView, 1, depth, 1);
+}
+
+void Graphics::CreateRenderTargets(int width, int height)
+{
+	if (mBackBuffer)
+	{
+		mBackBuffer->Release();
+		mBackBuffer = nullptr;
+	}
+	if (mDepthStencilView)
+	{
+		mDepthStencilView->Release();
+		mDepthStencilView = nullptr;
+	}
+	if (mDepthTexture)
+	{
+		mDepthTexture->Release();
+		mDepthTexture = nullptr;
+	}
+
+	if (mSwapChain)
+	{
+		mSwapChain->ResizeBuffers(0, (UINT)width, (UINT)height, DXGI_FORMAT_UNKNOWN, 0);
+	}
+
+	// Grab the back buffer (access texture subresource in swap chain)
+	{
+		ID3D11Resource* pBackBuffer;
+		HRESULT hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), (LPVOID*)&pBackBuffer);
+		DbgAssert(hr == S_OK, "Something wrong with back buffer");
+		// Create a render target view with that resource
+		hr = mDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mBackBuffer);
+		DbgAssert(hr == S_OK, "Something went wrong while creating a render target view");
+		// Release the temporary resource
+		pBackBuffer->Release();
+	}
+
+	mCurrentRenderTarget = mBackBuffer;
+
+	// Z Buffer
+	{
+		// Create Depth Stencil State
+		ID3D11DepthStencilState* depthState = CreateDepthStencilState(D3D11_COMPARISON_LESS);
+		// Set Depth Stencil State
+		mContext->OMSetDepthStencilState(depthState, 0);
+		// Release depth state
+		depthState->Release();
+		// Create Depth Stencil
+		CreateDepthStencil(width, height, &mDepthTexture, &mDepthStencilView);
+	}
 }
 
 void Graphics::SetActiveTexture(int slot, ID3D11ShaderResourceView* pView)
