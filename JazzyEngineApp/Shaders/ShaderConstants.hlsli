@@ -1,4 +1,4 @@
-//#pragma pack_matrix(row_major)
+#pragma pack_matrix(row_major)
 
 cbuffer PerObjectConstants : register(b0)
 {

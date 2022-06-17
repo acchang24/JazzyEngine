@@ -53,5 +53,18 @@ public:
 
 private:
 	ID3D11Buffer* mConstColorBuffer;
+
+	float phi = 0.0f;
+	float chi = 0.0f;
+	float theta = 0.0f;
+
+	float r = 0.0f;
+
+	float droll = 0.0f;
+	float dpitch = 0.0f;
+	float dyaw = 0.0f;
+	float dphi = 0.0f;
+	float dtheta = 0.0f;
+	float dchi = 0.0f;
 };
 

@@ -271,6 +271,8 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			if (mGraphics->GetDevice() != nullptr && wParam != SIZE_MINIMIZED)
 			{
+				mGraphics->SetScreenWidth((float)LOWORD(lParam));
+				mGraphics->SetScreenHeight((float)HIWORD(lParam));
 				mGraphics->CreateRenderTargets((int)LOWORD(lParam), (int)HIWORD(lParam));
 				mGraphics->SetViewport(0.0f, 0.0f, (float)LOWORD(lParam), (float)HIWORD(lParam));
 			}

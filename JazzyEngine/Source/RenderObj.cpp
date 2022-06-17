@@ -9,7 +9,7 @@ RenderObj::RenderObj()
 	, mConstBuffer(nullptr)
 	, mShader(nullptr)
 	, pos(Vector3::Zero)
-	, scale(0.0f)
+	, scale(1.0f)
 	, rotation(0.0f)
 {
 }
@@ -18,7 +18,7 @@ RenderObj::RenderObj(const VertexBuffer* vBuffer, Shader* shader)
 	: mVertexBuffer(vBuffer)
 	, mShader(shader)
 	, pos(Vector3::Zero)
-	, scale(0.0f)
+	, scale(1.0f)
 	, rotation(0.0f)
 {
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
@@ -48,7 +48,11 @@ RenderObj::~RenderObj()
 
 void RenderObj::Update(float deltaTime)
 {
+	Matrix4 mat = Matrix4::CreateScale(scale)
+		* Matrix4::CreateYawPitchRoll(yaw, pitch, roll)
+		* Matrix4::CreateTranslation(pos);
 
+	mObjConsts.modelToWorld = mat;
 }
 
 void RenderObj::Draw()

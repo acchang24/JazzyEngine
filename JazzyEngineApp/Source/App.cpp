@@ -193,6 +193,9 @@ int App::Run()
 
 	MSG msg = {};
 
+	static float f = 1.0f;
+	static int counter = 0;
+
 	// Get the current time
 	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
@@ -217,19 +220,6 @@ int App::Run()
 				const auto e = wnd->mMouse->Read();
 				switch (e.GetType())
 				{
-					/*case Mouse::Event::Type::Leave:
-						wnd->SetTitle(L"GONE");
-						break;
-					case Mouse::Event::Type::Move:
-						{
-							std::ostringstream oss;
-							oss << "Mouse Position: (" << e.GetX() << ", " << e.GetY() << ")";
-							std::string s = oss.str();
-							std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-							std::wstring ws = converter.from_bytes(s);
-							wnd->SetTitle(ws);
-						}
-						break;*/
 				case Mouse::Event::Type::WheelUp:
 					zoom += 0.2f;
 					break;
@@ -238,90 +228,81 @@ int App::Run()
 					break;
 				}
 			}
-			/*if (wnd->mKeyboard->KeyIsPressed('A'))
-			{
-				MessageBoxW(nullptr, L"Something HapponNN!", L"A Key Was Pressed", MB_OK | MB_ICONEXCLAMATION);
-			}*/
 		}
 
-		if (running)
-		{
-			std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-			double duration = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-			float deltaTime = (float)(0.000000001 * duration);
-			start = end;
+		
+		std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+		double duration = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		float deltaTime = (float)(0.000000001 * duration);
+		deltaTime *= f;
+		start = end;
 
-			fps = (int)(1.0f / deltaTime);
-			/*std::ostringstream oss;
-			oss << "FPS: " << fps;
-			std::string str = oss.str();
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-			std::wstring ws = converter.from_bytes(str);
-			wnd->SetTitle(ws);*/
+		fps = (int)(1.0f / deltaTime);
+		/*std::ostringstream oss;
+		oss << "FPS: " << fps;
+		std::string str = oss.str();
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		std::wstring ws = converter.from_bytes(str);
+		wnd->SetTitle(ws);*/
 
-			Update(deltaTime);
+		Update(deltaTime);
 			
 
-			ImGui_ImplDX11_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
 
-			// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-			if (show_demo_window)
-				ImGui::ShowDemoWindow(&show_demo_window);
+		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+		if (show_demo_window)
+			ImGui::ShowDemoWindow(&show_demo_window);
 
-			// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-			{
-				static float f = 0.0f;
-				static int counter = 0;
+		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+		{
+			
 
-				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-				ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-				ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-				ImGui::Checkbox("Another Window", &show_another_window);
+			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			ImGui::Checkbox("Another Window", &show_another_window);
 
-				ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-				ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+			ImGui::SliderFloat("Simulation Speed", &f, 0.05f, 2.5f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-				if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-					counter++;
-				ImGui::SameLine();
-				ImGui::Text("counter = %d", counter);
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
+			ImGui::Text("counter = %d", counter);
 
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::End();
-			}
-
-			// 3. Show another simple window.
-			if (show_another_window)
-			{
-				ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-				ImGui::Text("Hello from another window!");
-				if (ImGui::Button("Close Me"))
-					show_another_window = false;
-				ImGui::End();
-			}
-
-			// Rendering
-			ImGui::Render();
-			ID3D11RenderTargetView* view = Graphics::Get()->GetBackBuffer();
-			const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
-        
-			RenderFrame();
-		
-			//Graphics::Get()->GetContext()->OMSetRenderTargets(1, &view, Graphics::Get()->GetDepthStencilView());
-			//Graphics::Get()->GetContext()->ClearRenderTargetView(view, clear_color_with_alpha);
-			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-			// Update and Render additional Platform Windows
-			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-			{
-				ImGui::UpdatePlatformWindows();
-				ImGui::RenderPlatformWindowsDefault();
-			}
-			Graphics::Get()->EndFrame();
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
 		}
+
+		// 3. Show another simple window.
+		if (show_another_window)
+		{
+			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Text("Hello from another window!");
+			if (ImGui::Button("Close Me"))
+				show_another_window = false;
+			ImGui::End();
+		}
+
+		// Rendering
+		ImGui::Render();
+
+		RenderFrame();
+		
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		// Update and Render additional Platform Windows
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
+
+		Graphics::Get()->EndFrame();
 	}
 
 	ImGui_ImplDX11_Shutdown();
@@ -342,33 +323,11 @@ void App::Update(float deltaTime)
 		o->Update(deltaTime);
 	}
 
-	/*Matrix4 transform = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 4.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 0.75f, 0.5f, 40.0f);
-	transform.Transpose();
+	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale()) * Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
+		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, -14.0f + zoom))
+		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 20.0f))
+		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(90.0f), Graphics::Get()->GetScreenWidth(), Graphics::Get()->GetScreenHeight(), 0.5f, 10000.0f);
 
-	Matrix4 transform1 = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(4.0f, 0.0f, 4.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 0.75f, 0.5f, 40.0f);
-	transform1.Transpose();
-
-	Matrix4 transform2 = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(-4.0f, 0.0f, 4.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 0.75f, 0.5f, 40.0f);
-	transform2.Transpose();
-
-	Matrix4 transform3 = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(-angle) * Matrix4::CreateRotationX(0.25f * -angle)
-		* Matrix4::CreateTranslation(Vector3(wnd->mMouse->GetPosX() / (wnd->GetGraphics()->GetScreenWidth() /2.0f) - 1.0f, -wnd->mMouse->GetPosY() / (wnd->GetGraphics()->GetScreenHeight()/2.0f) + 1.0f, zoom + 4.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 9.0f / 16.0f, 1.0f, 10000.0f);
-	transform3.Transpose();
-
-	testCube->mObjConsts.modelToWorld = transform;
-	testCube2->mObjConsts.modelToWorld = transform1;
-	testCube3->mObjConsts.modelToWorld = transform2;*/
-	Matrix4 transform = Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 6.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(100.0f), 1.0f, 0.75f, 0.5f, 40.0f);
-	transform.Transpose();
 	testCube->mObjConsts.modelToWorld = transform;
 }
 
@@ -392,8 +351,6 @@ void App::RenderFrame()
 	{
 		o->Draw();
 	}
-
-	
 }
 
 void App::AddRenderObj(RenderObj* obj)

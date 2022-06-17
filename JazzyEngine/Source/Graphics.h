@@ -55,6 +55,8 @@ public:
 
 	void EndFrame();
 
+	void SetScreenWidth(float w) { screenWidth = w; }
+	void SetScreenHeight(float h) { screenHeight = h; }
 	// Getters for screen dimensions
 	float GetScreenWidth() { return screenWidth; }
 	float GetScreenHeight() { return screenHeight; }
