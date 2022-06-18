@@ -18,6 +18,8 @@ VertexOut main(VertexIn vIn)
 
 	output.pos = mul(float4(vIn.pos.x, vIn.pos.y, vIn.pos.z, 1.0f), modelToWorld);
 
+	output.pos = mul(output.pos, viewProj);
+
 	output.uv = vIn.uv;
 
 	return output;

@@ -10,6 +10,7 @@ class Shader;
 class RenderObj;
 class Cube;
 class Texture;
+class Camera;
 
 class App
 {
@@ -36,6 +37,8 @@ private:
 	std::vector<RenderObj*> renderObjects;
 
 	ID3D11Buffer* mConstColorBuffer;
+
+	Camera* mCamera;
 
 	Texture* hoovy = nullptr;
 

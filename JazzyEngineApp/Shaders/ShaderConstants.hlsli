@@ -5,7 +5,13 @@ cbuffer PerObjectConstants : register(b0)
 	float4x4 modelToWorld;
 }
 
-cbuffer ColorBuffer : register(b1)
+cbuffer CameraConstants : register(b1)
+{
+	float4x4 viewProj;
+	float3 camPosition;
+}
+
+cbuffer ColorBuffer : register(b2)
 {
 	float4 face_color[6];
 };

@@ -8,6 +8,7 @@
 #include "RenderObj.h"
 #include "Cube.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -15,6 +16,7 @@
 App::App()
 	: testCube(nullptr)
 	, mConstColorBuffer(nullptr)
+	, mCamera(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -27,6 +29,8 @@ App::~App()
 
 void App::Init()
 {
+	mCamera = new Camera();
+
 	const VertexTexture vertices[] =
 	{
 		{ -1.0f, -1.0f, -1.0f, 0.0f, 0.0f},
@@ -125,6 +129,12 @@ void App::ShutDown()
 	{
 		mConstColorBuffer->Release();
 	}
+
+	if (mCamera)
+	{
+		delete mCamera;
+	}
+
 	delete hoovy;
 
 	// Delete/release stuff before window
@@ -142,7 +152,7 @@ int App::Run()
 	    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); //(void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
@@ -267,6 +277,14 @@ int App::Run()
 			ImGui::Checkbox("Another Window", &show_another_window);
 
 			ImGui::SliderFloat("Simulation Speed", &f, 0.05f, 2.5f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SameLine();
+			if (ImGui::Button("Reset"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				f = 1.0f;
+
+			ImGui::Text("Cube pos: %f,%f,%f", testCube->GetPos().x, testCube->GetPos().y, testCube->GetPos().z);
+
+			ImGui::Text("Camera pos: %f,%f,%f", mCamera->mCamConsts.position.x, mCamera->mCamConsts.position.y, mCamera->mCamConsts.position.z);
+
 			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
 			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -323,10 +341,18 @@ void App::Update(float deltaTime)
 		o->Update(deltaTime);
 	}
 
-	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale()) * Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle) * Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, -14.0f + zoom))
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 20.0f))
-		* Matrix4::CreatePerspectiveFOV(Math::ToRadians(90.0f), Graphics::Get()->GetScreenWidth(), Graphics::Get()->GetScreenHeight(), 0.5f, 10000.0f);
+	Matrix4 test = Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 10.0f));
+	test.Invert();
+	Vector3 vhat = test.GetTranslation();
+
+	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale())				// model to world
+		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle)
+		* Matrix4::CreateRotationX(0.25f * angle)
+		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
+		
+		//* Matrix4::CreateYawPitchRoll(0.0f, 0.0f, 0.0f)				// camera
+		//* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 10.0f))
+		//* Matrix4::CreatePerspectiveFOV(Math::ToRadians(90.0f), Graphics::Get()->GetScreenWidth(), Graphics::Get()->GetScreenHeight(), 0.5f, 10000.0f);
 
 	testCube->mObjConsts.modelToWorld = transform;
 }
@@ -344,6 +370,8 @@ void App::RenderFrame()
 
 		g->ClearDepthBuffer(g->GetDepthStencilView(), 1.0f);
 	}
+
+	mCamera->SetActive();
 
 	hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 

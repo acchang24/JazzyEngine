@@ -48,6 +48,8 @@ RenderObj::~RenderObj()
 
 void RenderObj::Update(float deltaTime)
 {
+	pos = mObjConsts.modelToWorld.GetTranslation();
+
 	Matrix4 mat = Matrix4::CreateScale(scale)
 		* Matrix4::CreateYawPitchRoll(yaw, pitch, roll)
 		* Matrix4::CreateTranslation(pos);
