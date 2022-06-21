@@ -23,6 +23,14 @@ public:
 	float GetRotation() { return rotation; }
 	Vector3 GetPos() { return pos; }
 
+	void SetScale(float s) { scale = s; }
+	void SetPos(Vector3 p) { pos = p; }
+	void SetYaw(float y) { yaw = y; }
+	void SetPitch(float p) { pitch = p; }
+	void SetRoll(float r) { roll = r; }
+
+	Vector3 GetForward();
+
 	virtual void Update(float deltaTime);
 
 	virtual void Draw();
@@ -41,6 +49,8 @@ protected:
 	Vector3 pos;
 	float scale;
 	float rotation;
+
+	Vector3 forward;
 
 	float pitch = 0.0f; // Rotation x
 	float yaw = 0.0f; // Rotation y

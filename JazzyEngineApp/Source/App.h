@@ -6,7 +6,6 @@
 
 // App is the main class that starts the game loop/engine
 
-class Shader;
 class RenderObj;
 class Cube;
 class Texture;
@@ -26,6 +25,7 @@ public:
 	// Start game loop
 	int Run();
 
+	void ProcessInput();
 	void Update(float deltaTime);
 	void RenderFrame();
 
@@ -43,7 +43,7 @@ private:
 	Texture* hoovy = nullptr;
 
 	float angle = 0.0f;
-	float zoom = 0.0f;
+	float zoom = 1.0f;
 
 	int fps = 0;
 

@@ -11,6 +11,7 @@ RenderObj::RenderObj()
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
+	, forward(Vector3::Zero)
 {
 }
 
@@ -46,10 +47,13 @@ RenderObj::~RenderObj()
 	}
 }
 
+Vector3 RenderObj::GetForward()
+{
+	return Vector3(cosf(rotation + Math::PiOver2), sinf(rotation + Math::PiOver2), 0.0f);
+}
+
 void RenderObj::Update(float deltaTime)
 {
-	pos = mObjConsts.modelToWorld.GetTranslation();
-
 	Matrix4 mat = Matrix4::CreateScale(scale)
 		* Matrix4::CreateYawPitchRoll(yaw, pitch, roll)
 		* Matrix4::CreateTranslation(pos);

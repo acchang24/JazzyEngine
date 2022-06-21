@@ -2,7 +2,6 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include <memory>
 
 // Class to represent a window and encapsulates the creation, destruction, and message handling for a window
 class Window
@@ -14,8 +13,6 @@ public:
 	Window& operator=(const Window&) = delete;
 
 	void SetTitle(const std::wstring& title);
-
-	Graphics* GetGraphics() { return mGraphics; }
 
 	HWND GetHwnd() { return hWnd; }
 

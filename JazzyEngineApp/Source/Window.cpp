@@ -12,20 +12,6 @@ Window::WindowClass Window::WindowClass::wndClass;
 Window::WindowClass::WindowClass()
 	: hInst(GetModuleHandle(nullptr)) // GetModuleHandle to save instance
 {
-	/*WNDCLASSEX wc = { 
-		sizeof(WNDCLASSEX), 
-		CS_CLASSDC, 
-		HandleMsgSetup, 
-		0L, 
-		0L, 
-		GetInstance(), 
-		static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 64, 64, 0)), 
-		nullptr, 
-		nullptr, 
-		nullptr, 
-		GetName(), 
-		static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0)) };*/
-
 	// Register a window class
 	WNDCLASSEXW wc;
 	ZeroMemory(&wc, sizeof(WNDCLASSEX));
@@ -82,18 +68,6 @@ Window::Window(int width, int height, const wchar_t* name)
 	{
 		throw WND_LAST_EXCEPT();
 	}
-
-	// Create window and get hWnd
-	/*hWnd = CreateWindowExW(
-		0,
-		WindowClass::GetName(),
-		name,
-		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT, (wr.right - wr.left), (wr.bottom - wr.top),
-		nullptr,
-		nullptr,
-		WindowClass::GetInstance(),
-		this);*/
 
 	hWnd = CreateWindow(
 		L"Engine",
@@ -165,7 +139,9 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-        return true;
+	{
+		return true;
+	}
 	switch (msg)
 	{
 		// Post quit message when user exits program
@@ -280,7 +256,5 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		
 		return 0;
 	}
-
-
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

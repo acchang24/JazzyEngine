@@ -67,14 +67,7 @@ void Cube::Update(float deltaTime)
 	// Calculate transform
 	Matrix4 mat = Matrix4::CreateScale(scale) * Matrix4::CreateYawPitchRoll(yaw, pitch, roll)
 		* Matrix4::CreateTranslation(Vector3(r, 0.0f, 0.0f))
-
 		* Matrix4::CreateYawPitchRoll(chi, phi, theta);
-
-		//* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 0.0f))
-		//* Matrix4::CreateYawPitchRoll(0.0f, 0.0f, 0.0f)
-		
-		//* Matrix4::CreatePerspectiveFOV(Math::ToRadians(90.0f), Graphics::Get()->GetScreenWidth(), Graphics::Get()->GetScreenHeight(), 0.5f, 10000.0f);
-	//mat.Transpose();
 
 	mObjConsts.modelToWorld = mat;
 }
