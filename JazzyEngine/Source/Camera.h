@@ -5,7 +5,13 @@ struct CameraConstants
 {
 	Matrix4 viewProjection;
 	Vector3 position;
-	float padding;
+	float padding = 0.0f;
+};
+
+enum class CameraType
+{
+	FirstPerson,
+	ThirdPerson,
 };
 
 class Camera
@@ -18,28 +24,30 @@ public:
 
 	void SetActive();
 
+	CameraType GetType() { return mType; }
+
+	void SwitchCamera();
+	void ResetCamera();
+
 	CameraConstants mCamConsts;
 	Matrix4 mWorldToCamera;
 	Matrix4 mProjection;
-
-	Matrix4 mRotation = Matrix4::Identity;
-
+	
 	Vector3 cameraForward;
-
-	Vector3 deltaPos;
 
 	float pitch = 0.0f;
 	float yaw = 0.0f;
 	float roll = 0.0f;
-
-	float xRot = 0.0f;
-	float yRot = 0.0f;
 
 	float rotSpeed = 5.0f;
 
 private:
 	ID3D11Buffer* mConstBuffer;
 
-	
+	Vector3 camTarget;
+
+	Vector3 defaultFwd;
+
+	CameraType mType = CameraType::ThirdPerson;
 };
 

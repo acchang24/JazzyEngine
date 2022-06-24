@@ -210,174 +210,159 @@ public:
 class Vector3
 {
 public:
-    union
-    {
-        __m128 mVec;
-        struct { float x, y, z; };
-    };
+    float x;
+    float y;
+    float z;
 
     Vector3()
-    {
-        mVec = _mm_setzero_ps();
-    }
+        : x(0.0f)
+        , y(0.0f)
+        , z(0.0f)
+    {}
 
     explicit Vector3(float inX, float inY, float inZ)
-    {
-        mVec = _mm_setr_ps(inX, inY, inZ, 0.0f);
-    }
+        : x(inX)
+        , y(inY)
+        , z(inZ)
+    {}
 
+#pragma warning(push)
+#pragma warning(disable : 26495)
     explicit Vector3(__m128 value)
     {
-        mVec = value;
+        memcpy(this, &value, sizeof(float) * 3);
     }
+#pragma warning(pop)
 
     // Set all three components in one line
     void Set(float inX, float inY, float inZ)
     {
-        mVec = _mm_setr_ps(inX, inY, inZ, 0.0f);
+        x = inX;
+        y = inY;
+        z = inZ;
     }
 
     // Vector addition (a + b)
     friend Vector3 operator+(const Vector3& a, const Vector3& b)
     {
-        return Vector3(_mm_add_ps(a.mVec, b.mVec));
+        return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
     // Vector subtraction (a - b)
     friend Vector3 operator-(const Vector3& a, const Vector3& b)
     {
-        return Vector3(_mm_sub_ps(a.mVec, b.mVec));
+        return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
     }
 
     // Component-wise multiplication
-    friend Vector3 operator*(const Vector3& a, const Vector3& b)
+    friend Vector3 operator*(const Vector3& left, const Vector3& right)
     {
-        return Vector3(_mm_mul_ps(a.mVec, b.mVec));
+        return Vector3(left.x * right.x, left.y * right.y, left.z * right.z);
     }
 
     // Scalar multiplication
     friend Vector3 operator*(const Vector3& vec, float scalar)
     {
-        return Vector3(_mm_mul_ps(vec.mVec, _mm_set_ps1(scalar)));
+        return Vector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
     }
 
     // Scalar multiplication
     friend Vector3 operator*(float scalar, const Vector3& vec)
     {
-        return Vector3(_mm_mul_ps(_mm_set_ps1(scalar), vec.mVec));
+        return Vector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
     }
 
     // Scalar *=
     Vector3& operator*=(float scalar)
     {
-        mVec = _mm_mul_ps(mVec, _mm_set_ps1(scalar));
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
         return *this;
     }
 
     // Scalar division
     friend Vector3 operator/(const Vector3& vec, float scalar)
     {
-        return Vector3(_mm_div_ps(vec.mVec, _mm_set_ps1(scalar)));
+        return Vector3(vec.x / scalar, vec.y / scalar, vec.z / scalar);
     }
 
     // Scalar /=
     Vector3& operator/=(float scalar)
     {
-        mVec = _mm_div_ps(mVec, _mm_set_ps1(scalar));
+        x /= scalar;
+        y /= scalar;
+        z /= scalar;
         return *this;
     }
 
     // Vector +=
     Vector3& operator+=(const Vector3& right)
     {
-        mVec = _mm_add_ps(mVec, right.mVec);
+        x += right.x;
+        y += right.y;
+        z += right.z;
         return *this;
     }
 
     // Vector -=
     Vector3& operator-=(const Vector3& right)
     {
-        mVec = _mm_sub_ps(mVec, right.mVec);
+        x -= right.x;
+        y -= right.y;
+        z -= right.z;
         return *this;
-    }
-
-    // Length squared of vector (as a vector)
-    Vector3 LengthSq_v() const
-    {
-        return Vector3(_mm_mul_ps(mVec, mVec));
     }
 
     // Length squared of vector
     float LengthSq() const
     {
-        Vector3 length = LengthSq_v();
-        return length.x + length.y + length.z;
-    }
-
-    // Length of vector (as a vector)
-    Vector3 Length_v() const
-    {
-        Vector3 length = LengthSq_v();
-        return Vector3(_mm_rsqrt_ps(length.mVec));
+        return (x * x + y * y + z * z);
     }
 
     // Length of vector
     float Length() const
     {
-        Vector3 length = Length_v();
-        return length.x + length.y + length.z;
+        return (sqrtf(LengthSq()));
     }
 
     // Normalize this vector
     void Normalize()
     {
-        // Calculate length squared (data dot data)
-        // The mask 0x77 will dot the x, y, and z components,
-        // and store it in results x, y, and z.
-        __m128 temp = _mm_dp_ps(mVec, mVec, 0x77);
-        // stores (1 / length) in x, y, and z
-        temp = _mm_rsqrt_ps(temp);
-        // multiply all components by (1 / length)
-        mVec = _mm_mul_ps(mVec, temp);
+        float length = Length();
+        x /= length;
+        y /= length;
+        z /= length;
     }
 
     // Normalize the provided vector
     friend Vector3 Normalize(const Vector3& vec)
     {
-        __m128 temp = _mm_dp_ps(vec.mVec, vec.mVec, 0x77);
-        temp = _mm_rsqrt_ps(temp);
-        return Vector3(_mm_mul_ps(vec.mVec, temp));
-    }
-
-    // Dot product between two vectors (a dot b) (as a vector)
-    friend Vector3 Dot_v(const Vector3& a, const Vector3& b)
-    {
-        return Vector3(_mm_dp_ps(a.mVec, b.mVec, 0x77));
+        Vector3 temp = vec;
+        temp.Normalize();
+        return temp;
     }
 
     // Dot product between two vectors (a dot b)
     friend float Dot(const Vector3& a, const Vector3& b)
     {
-        Vector3 dot = Dot_v(a, b);
-        return dot.x;
+        return (a.x * b.x + a.y * b.y + a.z * b.z);
     }
 
     // Cross product between two vectors (a cross b)
     friend Vector3 Cross(const Vector3& a, const Vector3& b)
     {
-        __m128 tempA = _mm_shuffle_ps(a.mVec, a.mVec, _MM_SHUFFLER(1, 2, 0, 0));
-        __m128 tempB = _mm_shuffle_ps(b.mVec, b.mVec, _MM_SHUFFLER(2, 0, 1, 0));
-        Vector3 lhs = Vector3(tempA) * Vector3(tempB);
-        tempA = _mm_shuffle_ps(a.mVec, a.mVec, _MM_SHUFFLER(2, 0, 1, 0));
-        tempB = _mm_shuffle_ps(b.mVec, b.mVec, _MM_SHUFFLER(1, 2, 0, 0));
-        Vector3 rhs = Vector3(tempA) * Vector3(tempB);
-        return lhs - rhs;
+        Vector3 temp;
+        temp.x = a.y * b.z - a.z * b.y;
+        temp.y = a.z * b.x - a.x * b.z;
+        temp.z = a.x * b.y - a.y * b.x;
+        return temp;
     }
 
     // Lerp from A to B by f
     friend Vector3 Lerp(const Vector3& a, const Vector3& b, float f)
     {
-        return Vector3(a + Vector3(_mm_set_ps1(f)) * (b - a));
+        return Vector3(a + f * (b - a));
     }
 
     static const Vector3 Zero;

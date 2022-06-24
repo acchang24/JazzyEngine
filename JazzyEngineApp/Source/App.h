@@ -25,7 +25,7 @@ public:
 	// Start game loop
 	int Run();
 
-	void ProcessInput();
+	void ProcessInput(float deltaTime);
 	void Update(float deltaTime);
 	void RenderFrame();
 
@@ -44,6 +44,12 @@ private:
 
 	float angle = 0.0f;
 	float zoom = 1.0f;
+
+	bool prevCam = false;
+	bool prevSim = false;
+
+	bool simStopped = false;
+	float prevSpeed = 1.0f;
 
 	int fps = 0;
 
