@@ -299,20 +299,6 @@ int App::Run()
 			}
 		}
 
-		while (!wnd->mMouse->IsEmpty())
-		{
-			const auto e = wnd->mMouse->Read();
-			switch (e.GetType())
-			{
-			case Mouse::Event::Type::WheelUp:
-				zoom += 0.2f;
-				break;
-			case Mouse::Event::Type::WheelDown:
-				zoom -= 0.2f;
-				break;
-			}
-		}
-
 		std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 		double duration = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 		float deltaTime = (float)(0.000000001 * duration);
@@ -329,7 +315,16 @@ int App::Run()
 		t.Normalize();
 		float dot = Dot(q, t);
 
-		ProcessInput(deltaTime / f);
+		if (isPaused)
+		{
+			f = 0.0f;
+		}
+		else
+		{
+			f = prevSpeed;
+		}
+
+		ProcessInput(deltaTime);
 
 		Update(deltaTime * f);
 
@@ -386,14 +381,6 @@ int App::Run()
 			ImGui::Checkbox("Another Window", &show_another_window);
 			
 			ImGui::SliderFloat("Game Speed", &prevSpeed, 0.05f, 2.5f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			if (simStopped)
-			{
-				f = 0.0f;
-			}
-			else
-			{
-				f = prevSpeed;
-			}
 			
 			ImGui::SameLine();
 			if (ImGui::Button("Reset"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -448,64 +435,80 @@ int App::Run()
 
 void App::ProcessInput(float deltaTime)
 {
-	if (mCamera->GetType() == CameraType::FirstPerson)
+	while (!wnd->mMouse->IsEmpty())
 	{
-		if (wnd->mKeyboard->KeyIsPressed('W'))
+		const auto e = wnd->mMouse->Read();
+		switch (e.GetType())
 		{
-			mCamera->mCamConsts.position += Vector3(0.0f, 1.0f, 0.0f) * deltaTime * 7.5f;
-		}
-		if (wnd->mKeyboard->KeyIsPressed('S'))
-		{
-			mCamera->mCamConsts.position += Vector3(0.0f, -1.0f, 0.0f) * deltaTime * 7.5f;
-		}
-		if (wnd->mKeyboard->KeyIsPressed('D'))
-		{
-			mCamera->mCamConsts.position += Vector3(1.0f, 0.0f, 0.0f) * deltaTime * 7.5f;
-		}
-		if (wnd->mKeyboard->KeyIsPressed('A'))
-		{
-			mCamera->mCamConsts.position += Vector3(-1.0f, 0.0f, 0.0f) * deltaTime * 7.5f;
-		}
-		if (wnd->mKeyboard->KeyIsPressed('E'))
-		{
-			mCamera->roll += deltaTime * 3.0f;
-		}
-		if (wnd->mKeyboard->KeyIsPressed('Q'))
-		{
-			mCamera->roll -= deltaTime * 3.0f;
+		case Mouse::Event::Type::WheelUp:
+			zoom += 0.2f;
+			break;
+		case Mouse::Event::Type::WheelDown:
+			zoom -= 0.2f;
+			break;
 		}
 	}
-	if (wnd->mKeyboard->KeyIsPressed('Z'))
+	if (!isPaused)
 	{
-		mCamera->mCamConsts.position += mCamera->cameraForward * deltaTime * 7.5f;
-	}
-	if (wnd->mKeyboard->KeyIsPressed('X'))
-	{
-		mCamera->mCamConsts.position -= mCamera->cameraForward * deltaTime * 7.5f;
-	}
-	if (wnd->mKeyboard->KeyIsPressed(VK_LEFT))
-	{
-		mCamera->yaw += deltaTime * 2.0f;
-	}
-	if (wnd->mKeyboard->KeyIsPressed(VK_RIGHT))
-	{
-		mCamera->yaw -= deltaTime * 2.0f;
-	}
-	if (wnd->mKeyboard->KeyIsPressed(VK_UP) && mCamera->pitch > -Math::Pi / 2.01f)
-	{
-		mCamera->pitch -= deltaTime * 2.0f;
-	}
-	if (wnd->mKeyboard->KeyIsPressed(VK_DOWN) && mCamera->pitch < Math::Pi / 2.01f)
-	{
-		mCamera->pitch += deltaTime * 2.0f ;
-	}
-	if (wnd->mKeyboard->KeyIsPressed('V') && !prevCam)
-	{
-		mCamera->SwitchCamera();
+		if (mCamera->GetType() == CameraType::FirstPerson)
+		{
+			if (wnd->mKeyboard->KeyIsPressed('W'))
+			{
+				mCamera->mCamConsts.position += Vector3(0.0f, 1.0f, 0.0f) * deltaTime * 7.5f;
+			}
+			if (wnd->mKeyboard->KeyIsPressed('S'))
+			{
+				mCamera->mCamConsts.position += Vector3(0.0f, -1.0f, 0.0f) * deltaTime * 7.5f;
+			}
+			if (wnd->mKeyboard->KeyIsPressed('D'))
+			{
+				mCamera->mCamConsts.position += Vector3(1.0f, 0.0f, 0.0f) * deltaTime * 7.5f;
+			}
+			if (wnd->mKeyboard->KeyIsPressed('A'))
+			{
+				mCamera->mCamConsts.position += Vector3(-1.0f, 0.0f, 0.0f) * deltaTime * 7.5f;
+			}
+			if (wnd->mKeyboard->KeyIsPressed('E'))
+			{
+				mCamera->roll += deltaTime * 3.0f;
+			}
+			if (wnd->mKeyboard->KeyIsPressed('Q'))
+			{
+				mCamera->roll -= deltaTime * 3.0f;
+			}
+		}
+		if (wnd->mKeyboard->KeyIsPressed('Z'))
+		{
+			mCamera->mCamConsts.position += mCamera->cameraForward * deltaTime * 7.5f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed('X'))
+		{
+			mCamera->mCamConsts.position -= mCamera->cameraForward * deltaTime * 7.5f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed(VK_LEFT))
+		{
+			mCamera->yaw += deltaTime * 2.0f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed(VK_RIGHT))
+		{
+			mCamera->yaw -= deltaTime * 2.0f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed(VK_UP) && mCamera->pitch > -Math::Pi / 2.01f)
+		{
+			mCamera->pitch -= deltaTime * 2.0f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed(VK_DOWN) && mCamera->pitch < Math::Pi / 2.01f)
+		{
+			mCamera->pitch += deltaTime * 2.0f;
+		}
+		if (wnd->mKeyboard->KeyIsPressed('V') && !prevCam)
+		{
+			mCamera->SwitchCamera();
+		}
 	}
 	if (wnd->mKeyboard->KeyIsPressed(VK_ESCAPE) && !prevSim)
 	{
-		simStopped = !simStopped;
+		isPaused = !isPaused;
 	}
 	prevCam = wnd->mKeyboard->KeyIsPressed('V');
 	prevSim = wnd->mKeyboard->KeyIsPressed(VK_ESCAPE);

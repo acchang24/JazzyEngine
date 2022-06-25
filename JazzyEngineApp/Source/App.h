@@ -53,7 +53,7 @@ private:
 	bool prevCam = false;
 	bool prevSim = false;
 
-	bool simStopped = false;
+	bool isPaused = false;
 	float prevSpeed = 1.0f;
 
 	int fps = 0;
