@@ -8,6 +8,7 @@
 #include "Cube.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "AssetManager.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -16,6 +17,7 @@ App::App()
 	: testCube(nullptr)
 	, mConstColorBuffer(nullptr)
 	, mCamera(nullptr)
+	, mAssetManager(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -29,6 +31,8 @@ App::~App()
 void App::Init()
 {
 	mCamera = new Camera();
+
+	mAssetManager = new AssetManager();
 
 	const VertexTexture vertices[] =
 	{
@@ -88,25 +92,10 @@ void App::Init()
 	hoovy = new Texture();
 	hoovy->Load(L"Assets/Textures/hoovy.jpg");
 
-	// Shader
-	Shader* mShader = new Shader();
-
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	const D3D11_INPUT_ELEMENT_DESC tex[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	mShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, tex, sizeof(tex) / sizeof(tex[0]));
-	mShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, tex, sizeof(tex) / sizeof(tex[0]));
+	LoadShaders();
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mShader);
+	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
 	AddRenderObj(testCube);
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
@@ -115,7 +104,6 @@ void App::Init()
 		Cube* newCube = new Cube();
 		AddRenderObj(newCube);
 	}
-
 }
 
 void App::ShutDown()
@@ -136,13 +124,51 @@ void App::ShutDown()
 		delete mCamera;
 	}
 
-	delete hoovy;
+	if (hoovy)
+	{
+		delete hoovy;
+	}
+
+	if (mAssetManager)
+	{
+		delete mAssetManager;
+	}
 
 	// Delete/release stuff before window
 	if (wnd)
 	{
 		delete wnd;
 	}
+}
+
+void App::LoadShaders()
+{
+	/*const D3D11_INPUT_ELEMENT_DESC ied[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};*/
+
+	// Textured Shader
+	Shader* texturedShader = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC tex[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	texturedShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, tex, sizeof(tex) / sizeof(tex[0]));
+	texturedShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, tex, sizeof(tex) / sizeof(tex[0]));
+	mAssetManager->SaveShader("Textured", texturedShader);
+
+	// Colored Cube shader
+	Shader* color = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC colorIed[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	color->Load(L"Shaders/CubeVS.hlsl", ShaderType::Vertex, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
+	color->Load(L"Shaders/CubePS.hlsl", ShaderType::Pixel, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
+	mAssetManager->SaveShader("ColorCube", color);
 }
 
 int App::Run()
@@ -312,7 +338,7 @@ int App::Run()
 			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 			ImGui::Checkbox("Another Window", &show_another_window);
 			
-			ImGui::SliderFloat("Simulation Speed", &prevSpeed, 0.05f, 2.5f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat("Game Speed", &prevSpeed, 0.05f, 2.5f);            // Edit 1 float using a slider from 0.0f to 1.0f
 			if (simStopped)
 			{
 				f = 0.0f;
@@ -430,12 +456,12 @@ void App::ProcessInput(float deltaTime)
 	{
 		mCamera->SwitchCamera();
 	}
-	if (wnd->mKeyboard->KeyIsPressed(VK_SPACE) && !prevSim)
+	if (wnd->mKeyboard->KeyIsPressed(VK_ESCAPE) && !prevSim)
 	{
 		simStopped = !simStopped;
 	}
 	prevCam = wnd->mKeyboard->KeyIsPressed('V');
-	prevSim = wnd->mKeyboard->KeyIsPressed(VK_SPACE);
+	prevSim = wnd->mKeyboard->KeyIsPressed(VK_ESCAPE);
 }
 
 void App::Update(float deltaTime)
@@ -451,7 +477,7 @@ void App::Update(float deltaTime)
 	test.Invert();
 	Vector3 vhat = test.GetTranslation();
 
-	/*testCube->SetPitch(angle * 0.25f);
+	testCube->SetPitch(angle * 0.25f);
 	testCube->SetRoll(0.0f);
 	testCube->SetYaw(angle);
 
@@ -463,7 +489,7 @@ void App::Update(float deltaTime)
 		* Matrix4::CreateRotationX(0.25f * angle)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
-	testCube->mObjConsts.modelToWorld = transform;*/
+	testCube->mObjConsts.modelToWorld = transform;
 }
 
 void App::RenderFrame()

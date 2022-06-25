@@ -4,10 +4,11 @@
 #include "Shader.h"
 #include "VertexBuffer.h"
 #include <random>
+#include "AssetManager.h"
 
 Cube::Cube() : RenderObj()
 {
-	scale;
+	scale = 1.0f;
 	std::mt19937 rng(std::random_device{}());
 	std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
 	std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
@@ -38,15 +39,8 @@ Cube::Cube() : RenderObj()
 
 	mObjConsts.modelToWorld = Matrix4::Identity;
 
-	mShader = new Shader();
+	mShader = AssetManager::Get()->GetShader("ColorCube");
 
-	const D3D11_INPUT_ELEMENT_DESC colorIed[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	mShader->Load(L"Shaders/CubeVS.hlsl", ShaderType::Vertex, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
-	mShader->Load(L"Shaders/CubePS.hlsl", ShaderType::Pixel, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
 	mConstColorBuffer = Graphics::Get()->CreateGraphicsBuffer(&cb2, sizeof(cb2), 0, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 }
 

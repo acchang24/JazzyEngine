@@ -19,6 +19,8 @@ public:
 	RenderObj(const RenderObj&) = delete;
 	RenderObj& operator=(const RenderObj&) = delete;
 
+	void SetShader(Shader* shader) { mShader = shader; }
+
 	float GetScale() { return scale; }
 	float GetRotation() { return rotation; }
 	Vector3 GetPos() { return pos; }

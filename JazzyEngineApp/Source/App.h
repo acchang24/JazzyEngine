@@ -10,6 +10,7 @@ class RenderObj;
 class Cube;
 class Texture;
 class Camera;
+class AssetManager;
 
 class App
 {
@@ -21,6 +22,8 @@ public:
 
 	void Init();
 	void ShutDown();
+
+	void LoadShaders();
 
 	// Start game loop
 	int Run();
@@ -41,6 +44,8 @@ private:
 	Camera* mCamera;
 
 	Texture* hoovy = nullptr;
+
+	AssetManager* mAssetManager;
 
 	float angle = 0.0f;
 	float zoom = 1.0f;

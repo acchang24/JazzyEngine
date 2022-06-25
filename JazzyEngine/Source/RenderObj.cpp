@@ -37,10 +37,6 @@ RenderObj::~RenderObj()
 	{
 		delete mVertexBuffer;
 	}
-	if (mShader)
-	{
-		delete mShader;
-	}
 	if (mConstBuffer)
 	{
 		mConstBuffer->Release();

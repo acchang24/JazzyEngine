@@ -51,6 +51,12 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AssetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EngineMath.cpp">
@@ -84,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AssetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
