@@ -34,59 +34,102 @@ void App::Init()
 
 	mAssetManager = new AssetManager();
 
-	const VertexTexture vertices[] =
+	const VertexTexture vTexture[] =
 	{
-		{ -1.0f, -1.0f, -1.0f, 0.0f, 0.0f},
-		{ 1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
-		{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f},
-		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
+		// Front
+		{ Vector3(-1.0f, 1.0f, -1.0f), 0.0f, 0.0f},
+		{ Vector3(1.0f, 1.0f, -1.0f), 1.0f, 0.0f},
+		{ Vector3(1.0f, -1.0f, -1.0f), 1.0f, 1.0f},
+		{ Vector3(-1.0f, -1.0f, -1.0f), 0.0f, 1.0f},
 
-		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
-		{ -1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
-		{ -1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-		{ -1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
-
-		{ -1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f},
-		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
-		{ 1.0f, -1.0f, 1.0f, 1.0f, 0.0f},
-
+		// Right
+		{ Vector3(1.0f, 1.0f, -1.0f), 0.0f, 0.0f},
+		{ Vector3(1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
+		{ Vector3(1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
+		{ Vector3(1.0f, -1.0f, -1.0f), 0.0f, 1.0f},
 		
-		{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
-		{ 1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
-		{ 1.0f, -1.0f, -1.0f, 1.0f, 0.0f},
+		// Back
+		{ Vector3(1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
+		{ Vector3(-1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
+		{ Vector3(-1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
+		{ Vector3(1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
 
-		{ -1.0f, 1.0f, -1.0f, 0.0f, 1.0f},
-		{ 1.0f, 1.0f, -1.0f, 1.0f, 1.0f},
-		{ -1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
-		{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
+		// Left
+		{ Vector3(-1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
+		{ Vector3(-1.0f, 1.0f, -1.0f), 1.0f, 0.0f},
+		{ Vector3(-1.0f, -1.0f, -1.0f), 1.0f, 1.0f},
+		{ Vector3(-1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
 
-		{ -1.0f, -1.0f, 1.0f, 0.0f, 0.0f},
-		{ 1.0f, -1.0f, 1.0f, 1.0f, 0.0f},
-		{ -1.0f, -1.0f, -1.0f, 0.0f, 1.0f},
-		{ 1.0f, -1.0f, -1.0f, 1.0f, 1.0f},
+		// Bottom
+		{ Vector3(-1.0f, -1.0f, -1.0f), 0.0f, 0.0f},
+		{ Vector3(1.0f, -1.0f, -1.0f), 1.0f, 0.0f},
+		{ Vector3(1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
+		{ Vector3(-1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
+
+		// Top
+		{ Vector3(-1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
+		{ Vector3(1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
+		{ Vector3(1.0f, 1.0f, -1.0f), 1.0f, 1.0f},
+		{ Vector3(-1.0f, 1.0f, -1.0f), 0.0f, 1.0f},
+	};
+	const Vertex vColor[] =
+	{
+		// Front
+		{ Vector3(-1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+
+		// Right
+		{ Vector3(1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+
+		// Back
+		{ Vector3(1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+
+		// Left
+		{ Vector3(-1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+
+		// Bottom
+		{ Vector3(-1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, -1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+
+		// Top
+		{ Vector3(-1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, 1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
+		{ Vector3(-1.0f, 1.0f, -1.0f), Color4(0.7f, 0.7f, 0.7f, 1.0f) },
 	};
 
 	const uint16_t indices[] =
 	{
-		0, 2, 1,
-		2, 3, 1,
+		1, 2, 0,
+		2, 3, 0,
 
-		4, 6, 5,
-		6, 7, 5,
+		7, 4, 6,
+		4, 5, 6,
 
-		8, 10, 9,
-		10, 11, 9,
+		9, 10, 8,
+		10, 11, 8,
 
-		12, 14, 13,
-		14, 15, 13,
+		13, 14, 12,
+		14, 15, 12,
 
-		16, 18, 17,
-		18, 19, 17,
-
-		20, 22, 21,
-		22, 23, 21
+		17, 18, 16,
+		18, 19, 16,
+		
+		21, 22, 20,
+		22, 23, 20,
 	};
 
 	hoovy = new Texture();
@@ -95,7 +138,7 @@ void App::Init()
 	LoadShaders();
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vertices, sizeof(vertices), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
+	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
 	AddRenderObj(testCube);
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
@@ -143,11 +186,15 @@ void App::ShutDown()
 
 void App::LoadShaders()
 {
-	/*const D3D11_INPUT_ELEMENT_DESC ied[] =
+	Shader* colored = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};*/
+	};
+	colored->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));
+	colored->Load(L"Shaders/PixelShader.hlsl", ShaderType::Pixel, ied, sizeof(ied) / sizeof(ied[0]));
+	mAssetManager->SaveShader("Colored", colored);
 
 	// Textured Shader
 	Shader* texturedShader = new Shader();

@@ -15,12 +15,12 @@ public:
 
 struct Vertex
 {
-    float x, y, z;
+    Vector3 pos;
     Color4 color;
 };
 
 struct VertexTexture
 {
-    float x, y, z;
+    Vector3 pos;
     float u, v;
 };
