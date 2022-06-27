@@ -25,12 +25,14 @@ public:
 		mAssetMap[key] = asset;
 	}
 
-	T* Get(const std::string& name)
+	T* Get(const std::string name)
 	{
 		if (mAssetMap.find(name) != mAssetMap.end())
 		{
 			return mAssetMap[name];
 		}
+		HRESULT hr = S_FALSE;
+		DbgAssert(hr == S_OK, "Could not find the loaded shader\n Check the shader name");
 		return nullptr;
 	}
 

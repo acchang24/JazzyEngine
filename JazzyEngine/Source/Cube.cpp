@@ -27,7 +27,7 @@ Cube::Cube() : RenderObj()
 	phi = adist(rng);
 
 
-	mVertexBuffer = new VertexBuffer(pps, sizeof(pps), sizeof(Vector3), indices, sizeof(indices), sizeof(uint16_t));
+	mVertexBuffer = new VertexBuffer(vColor, sizeof(vColor), sizeof(Vertex), indices, sizeof(indices), sizeof(uint16_t));
 
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,
@@ -39,14 +39,17 @@ Cube::Cube() : RenderObj()
 
 	mObjConsts.modelToWorld = Matrix4::Identity;
 
-	mShader = AssetManager::Get()->GetShader("ColorCube");
+	mShader = AssetManager::Get()->GetShader("Colored");
 
-	mConstColorBuffer = Graphics::Get()->CreateGraphicsBuffer(&cb2, sizeof(cb2), 0, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	//mConstColorBuffer = Graphics::Get()->CreateGraphicsBuffer(&cb2, sizeof(cb2), 0, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 }
 
 Cube::~Cube()
 {
-	mConstColorBuffer->Release();
+	if (mConstColorBuffer)
+	{
+		mConstColorBuffer->Release();
+	}
 }
 
 void Cube::Update(float deltaTime)
