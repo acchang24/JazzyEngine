@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\AssetManager.h" />
     <ClInclude Include="Source\Cache.h" />
     <ClInclude Include="Source\Camera.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Source\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Material.cpp" />
     <ClCompile Include="Source\AssetManager.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Cube.cpp" />

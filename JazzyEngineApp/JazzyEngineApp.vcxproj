@@ -198,7 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Application\Source\Engine.aps" />
-    <None Include="Shaders\ShaderConstants.hlsli" />
+    <None Include="Shaders\Constants.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\Engine.rc" />

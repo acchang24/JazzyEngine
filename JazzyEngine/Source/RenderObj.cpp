@@ -59,7 +59,7 @@ void RenderObj::Update(float deltaTime)
 
 void RenderObj::Draw()
 {
-	mShader->SetActive();
+	//mShader->SetActive();
 
 	Graphics* graphics = Graphics::Get();
 

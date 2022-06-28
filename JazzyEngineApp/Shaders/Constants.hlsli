@@ -11,7 +11,14 @@ cbuffer CameraConstants : register(b1)
 	float3 camPosition;
 }
 
-cbuffer ColorBuffer : register(b2)
+cbuffer MaterialConstants: register(b2)
+{
+	float3 diffuseColor;
+	float3 specularColor;
+	float specularPower;
+}
+
+cbuffer ColorBuffer : register(b3)
 {
 	float4 face_color[6];
 };

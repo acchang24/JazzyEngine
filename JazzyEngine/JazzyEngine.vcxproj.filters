@@ -60,6 +60,9 @@
     <ClInclude Include="Source\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EngineMath.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

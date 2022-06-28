@@ -11,6 +11,7 @@ class Cube;
 class Texture;
 class Camera;
 class AssetManager;
+class Material;
 
 class App
 {
@@ -46,6 +47,9 @@ private:
 	Texture* hoovy = nullptr;
 
 	AssetManager* mAssetManager;
+
+	Material* phongMaterial;
+	Material* phongTexturedMaterial;
 
 	float angle = 0.0f;
 	float zoom = 1.0f;

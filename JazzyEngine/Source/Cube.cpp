@@ -41,6 +41,7 @@ Cube::Cube() : RenderObj()
 
 	mShader = AssetManager::Get()->GetShader("Colored");
 
+	mConstColorBuffer = nullptr;
 	//mConstColorBuffer = Graphics::Get()->CreateGraphicsBuffer(&cb2, sizeof(cb2), 0, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 }
 

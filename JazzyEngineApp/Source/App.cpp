@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "AssetManager.h"
+#include "Material.h"
 
 #define WINWIDTH 1280
 #define WINHEIGHT 720
@@ -18,6 +19,8 @@ App::App()
 	, mConstColorBuffer(nullptr)
 	, mCamera(nullptr)
 	, mAssetManager(nullptr)
+	, phongMaterial(nullptr)
+	, phongTexturedMaterial(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -33,6 +36,10 @@ void App::Init()
 	mCamera = new Camera();
 
 	mAssetManager = new AssetManager();
+
+	phongMaterial = new Material();
+
+	phongTexturedMaterial = new Material();
 
 	const VertexTexture vTexture[] =
 	{
@@ -137,9 +144,22 @@ void App::Init()
 
 	LoadShaders();
 
+	// Initialize the materials for objects
+	phongMaterial->SetShader(mAssetManager->GetShader("Colored"));
+	phongMaterial->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongMaterial->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongMaterial->SetSpecularPower(10.0f);
+	
+	phongTexturedMaterial->SetShader(mAssetManager->GetShader("Textured"));
+	phongTexturedMaterial->SetTexture(0, hoovy);
+	phongTexturedMaterial->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongTexturedMaterial->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongTexturedMaterial->SetSpecularPower(10.0f);
+
+
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
-	AddRenderObj(testCube);
+	//AddRenderObj(testCube);
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
 	for (int i = 0; i < 80; i++)
@@ -171,6 +191,18 @@ void App::ShutDown()
 	{
 		delete hoovy;
 	}
+
+	if (phongMaterial)
+	{
+		delete phongMaterial;
+	}
+
+	if (phongTexturedMaterial)
+	{
+		delete phongTexturedMaterial;
+	}
+
+	delete testCube;
 
 	if (mAssetManager)
 	{
@@ -558,7 +590,12 @@ void App::RenderFrame()
 
 	mCamera->SetActive();
 
-	hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
+	phongTexturedMaterial->SetActive();
+	testCube->Draw();
+
+	phongMaterial->SetActive();
+
+	//hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 
 	for (auto o : renderObjects)
 	{

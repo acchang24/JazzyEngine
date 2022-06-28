@@ -1,4 +1,4 @@
-#include "ShaderConstants.hlsli"
+#include "Constants.hlsli"
 
 float4 main(float3 pos : POSITION) : SV_POSITION
 {

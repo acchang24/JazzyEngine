@@ -1,4 +1,4 @@
-#include "ShaderConstants.hlsli"
+#include "Constants.hlsli"
 
 struct VertexIn
 {
