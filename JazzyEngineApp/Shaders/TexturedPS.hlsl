@@ -4,7 +4,7 @@ float4 main(VertexOut psIn) : SV_TARGET
 {
 	psIn.normal = normalize(psIn.normal);
 
-float3 diffuseLight;
+	float3 diffuseLight;
 	float3 specularLight;
 
 	for (int i = 0; i < MAX_POINT_LIGHTS; i++)

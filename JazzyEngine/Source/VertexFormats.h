@@ -32,10 +32,9 @@ struct VertexPosNormUV
     Vector2 uv;
 };
 
-struct VertexPosNormColorUV
+struct VertexPosNormColor
 {
     Vector3 pos;
     Vector3 normal;
     Color4 color;
-    Vector2 uv;
 };

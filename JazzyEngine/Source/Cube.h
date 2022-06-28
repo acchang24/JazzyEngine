@@ -4,43 +4,43 @@
 
 class App;
 
-const Vertex vColor[] =
+const VertexPosNormColor vColor[] =
 {
 	// Front
-	{ Vector3(-1.0f, 1.0f, -1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
-	{ Vector3(1.0f, 1.0f, -1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, -1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
-	{ Vector3(-1.0f, -1.0f, -1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(0.0f,0.0f,-1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, -1.0f), Vector3(0.0f,0.0f,-1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, -1.0f), Vector3(0.0f,0.0f,-1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(0.0f,0.0f,-1.0f), Color4(1.0f, 0.0f, 0.0f, 1.0f) },
 
 	// Right
-	{ Vector3(1.0f, 1.0f, -1.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
-	{ Vector3(1.0f, 1.0f, 1.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, 1.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, -1.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, -1.0f), Vector3(1.0f, 0.0f, 0.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, 1.0f), Vector3(1.0f, 0.0f, 0.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, 1.0f), Vector3(1.0f, 0.0f, 0.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, -1.0f), Vector3(1.0f, 0.0f, 0.0f), Color4(0.0f, 1.0f, 1.0f, 1.0f) },
 
 	// Back
-	{ Vector3(1.0f, 1.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(-1.0f, 1.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(-1.0f, -1.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f, 0.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.0f, 0.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(0.0f, 0.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, 1.0f), Vector3(0.0f, 0.0f, 1.0f), Color4(0.0f, 1.0f, 0.0f, 1.0f) },
 
 	// Left
-	{ Vector3(-1.0f, 1.0f, 1.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(-1.0f, 1.0f, -1.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(-1.0f, -1.0f, -1.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(-1.0f, -1.0f, 1.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(-1.0f, 0.0f, 0.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(-1.0f, 0.0f, 0.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(-1.0f, 0.0f, 0.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(-1.0f, 0.0f, 0.0f), Color4(0.0f, 0.0f, 1.0f, 1.0f) },
 
 	// Bottom
-	{ Vector3(-1.0f, -1.0f, -1.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, -1.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(1.0f, -1.0f, 1.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
-	{ Vector3(-1.0f, -1.0f, 1.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(0.0f, -1.0f, 0.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, -1.0f), Vector3(0.0f, -1.0f, 0.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(1.0f, -1.0f, 1.0f), Vector3(0.0f, -1.0f, 0.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
+	{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(0.0f, -1.0f, 0.0f), Color4(1.0f, 0.0f, 1.0f, 1.0f) },
 
 	// Top
-	{ Vector3(-1.0f, 1.0f, 1.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(1.0f, 1.0f, 1.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(1.0f, 1.0f, -1.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
-	{ Vector3(-1.0f, 1.0f, -1.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(1.0f, 1.0f, -1.0f), Vector3(0.0f, 1.0f, 0.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
+	{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(0.0f, 1.0f, 0.0f), Color4(1.0f, 1.0f, 0.0f, 1.0f) },
 };
 
 const uint16_t indices[] =

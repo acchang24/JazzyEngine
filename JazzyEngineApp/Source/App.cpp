@@ -171,15 +171,15 @@ void App::Init()
 
 	PointLightData* light1 = AllocateLight();
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
-	light1->position = Vector3(-5.0f, -5.0f, -5.0f);
+	light1->position = Vector3(0.0f, 5.0f, 0.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
-	PointLightData* light2 = AllocateLight();
+	/*PointLightData* light2 = AllocateLight();
 	light2->lightColor = Vector3(1.0f, 1.0f, 0.2f);
 	light2->position = Vector3(5.0f, 5.0f, 5.0f);
 	light2->innerRadius = 20.0f;
-	light2->outerRadius = 200.0f;
+	light2->outerRadius = 200.0f;*/
 
 	mLightConsts;
 
@@ -253,6 +253,7 @@ void App::LoadShaders()
 	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	colored->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));

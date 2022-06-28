@@ -27,7 +27,7 @@ Cube::Cube() : RenderObj()
 	phi = adist(rng);
 
 
-	mVertexBuffer = new VertexBuffer(vColor, sizeof(vColor), sizeof(Vertex), indices, sizeof(indices), sizeof(uint16_t));
+	mVertexBuffer = new VertexBuffer(vColor, sizeof(vColor), sizeof(VertexPosNormColor), indices, sizeof(indices), sizeof(uint16_t));
 
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,
