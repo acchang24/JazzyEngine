@@ -4,6 +4,10 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx11.h"
 
+#include "Light.h"
+
+using namespace Light;
+
 // App is the main class that starts the game loop/engine
 
 class RenderObj;
@@ -35,6 +39,12 @@ public:
 
 	void AddRenderObj(RenderObj* obj);
 
+	// Light stuff
+	PointLightData* AllocateLight();
+	void FreeLight(PointLightData* pLight);
+	void SetAmbientLight(const Vector3& color);
+	const Vector3& GetAmbientLight() const;
+
 private:
 	RenderObj* testCube;
 
@@ -50,6 +60,10 @@ private:
 
 	Material* phongMaterial;
 	Material* phongTexturedMaterial;
+
+	LightingConstants mLightConsts = {};
+
+	ID3D11Buffer* lightConstBuffer;
 
 	float angle = 0.0f;
 	float zoom = 1.0f;

@@ -3,6 +3,8 @@
 #include <smmintrin.h>
 #include <cstring>
 
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
+
 // SHUFFLER is like shuffle, but has easier to understand indices
 #define _MM_SHUFFLER( xi, yi, zi, wi ) _MM_SHUFFLE( wi, zi, yi, xi )
 

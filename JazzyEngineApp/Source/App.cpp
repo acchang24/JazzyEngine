@@ -21,6 +21,7 @@ App::App()
 	, mAssetManager(nullptr)
 	, phongMaterial(nullptr)
 	, phongTexturedMaterial(nullptr)
+	, lightConstBuffer(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -40,6 +41,14 @@ void App::Init()
 	phongMaterial = new Material();
 
 	phongTexturedMaterial = new Material();
+
+	lightConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
+		&mLightConsts,
+		sizeof(mLightConsts),
+		0,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		D3D11_USAGE_DYNAMIC);
 
 	const VertexTexture vTexture[] =
 	{
@@ -157,6 +166,17 @@ void App::Init()
 	phongTexturedMaterial->SetSpecularPower(10.0f);
 
 
+	// Set ambient light
+	SetAmbientLight(Vector3(0.1f,0.1f,0.1f));
+
+	PointLightData* light1 = AllocateLight();
+	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
+	light1->position = Vector3(0.0f, 5.0f, 1.0f);
+	light1->innerRadius = 20.0f;
+	light1->outerRadius = 200.0f;
+
+
+
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
 	//AddRenderObj(testCube);
@@ -200,6 +220,11 @@ void App::ShutDown()
 	if (phongTexturedMaterial)
 	{
 		delete phongTexturedMaterial;
+	}
+
+	if (lightConstBuffer)
+	{
+		lightConstBuffer->Release();
 	}
 
 	delete testCube;
@@ -590,6 +615,9 @@ void App::RenderFrame()
 
 	mCamera->SetActive();
 
+	g->UploadBuffer(lightConstBuffer, &mLightConsts, sizeof(mLightConsts));
+	g->GetContext()->PSSetConstantBuffers(Graphics::CONSTANT_BUFFER_LIGHTING, 1, &lightConstBuffer);
+
 	phongTexturedMaterial->SetActive();
 	testCube->Draw();
 
@@ -606,4 +634,35 @@ void App::RenderFrame()
 void App::AddRenderObj(RenderObj* obj)
 {
 	renderObjects.push_back(obj);
+}
+
+PointLightData* App::AllocateLight()
+{
+	PointLightData* returnLight = nullptr;
+
+	for (int i = 0; i < ARRAY_SIZE(mLightConsts.pointLight); i++)
+	{
+		if (!mLightConsts.pointLight[i].isEnabled)
+		{
+			mLightConsts.pointLight[i].isEnabled = true;
+			returnLight = &mLightConsts.pointLight[i];
+			return returnLight;
+		}
+	}
+	return returnLight;
+}
+
+void App::FreeLight(PointLightData* pLight)
+{
+	pLight->isEnabled = false;
+}
+
+void App::SetAmbientLight(const Vector3& color)
+{
+	mLightConsts.ambientColor = color;
+}
+
+const Vector3& App::GetAmbientLight() const
+{
+	return mLightConsts.ambientColor;
 }

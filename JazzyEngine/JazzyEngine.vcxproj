@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\AssetManager.h" />
     <ClInclude Include="Source\Cache.h" />

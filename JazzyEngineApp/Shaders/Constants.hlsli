@@ -1,5 +1,16 @@
 #pragma pack_matrix(row_major)
 
+#define MAX_POINT_LIGHTS 10
+
+struct PointLightData
+{
+	float3 lightColor;
+	float3 position;
+	float innerRadius;
+	float outerRadius;
+	bool isEnabled;
+};
+
 cbuffer PerObjectConstants : register(b0)
 {
 	float4x4 modelToWorld;
@@ -18,7 +29,13 @@ cbuffer MaterialConstants: register(b2)
 	float specularPower;
 }
 
-cbuffer ColorBuffer : register(b3)
+cbuffer LightingConstants : register(b3)
+{
+	float3 ambientColor;
+	PointLightData pointLight[MAX_POINT_LIGHTS];
+}
+
+cbuffer ColorBuffer : register(b4)
 {
 	float4 face_color[6];
 };
