@@ -22,5 +22,20 @@ struct Vertex
 struct VertexTexture
 {
     Vector3 pos;
-    float u, v;
+    Vector2 uv;
+};
+
+struct VertexPosNormUV
+{
+    Vector3 pos;
+    Vector3 normal;
+    Vector2 uv;
+};
+
+struct VertexPosNormColorUV
+{
+    Vector3 pos;
+    Vector3 normal;
+    Color4 color;
+    Vector2 uv;
 };

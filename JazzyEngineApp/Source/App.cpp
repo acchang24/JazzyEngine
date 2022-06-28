@@ -50,43 +50,43 @@ void App::Init()
 		D3D11_CPU_ACCESS_WRITE,
 		D3D11_USAGE_DYNAMIC);
 
-	const VertexTexture vTexture[] =
+	const VertexPosNormUV vTexture[] =
 	{
 		// Front
-		{ Vector3(-1.0f, 1.0f, -1.0f), 0.0f, 0.0f},
-		{ Vector3(1.0f, 1.0f, -1.0f), 1.0f, 0.0f},
-		{ Vector3(1.0f, -1.0f, -1.0f), 1.0f, 1.0f},
-		{ Vector3(-1.0f, -1.0f, -1.0f), 0.0f, 1.0f},
+		{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(0.0f, 0.0f, -1.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(1.0f, 1.0f, -1.0f), Vector3(0.0f, 0.0f, -1.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(1.0f, -1.0f, -1.0f), Vector3(0.0f, 0.0f, -1.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(0.0f, 0.0f, -1.0f), Vector2(0.0f, 1.0f)},
 
 		// Right
-		{ Vector3(1.0f, 1.0f, -1.0f), 0.0f, 0.0f},
-		{ Vector3(1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
-		{ Vector3(1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
-		{ Vector3(1.0f, -1.0f, -1.0f), 0.0f, 1.0f},
+		{ Vector3(1.0f, 1.0f, -1.0f), Vector3(1.0f,0.0f,0.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(1.0f, 1.0f, 1.0f), Vector3(1.0f,0.0f,0.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(1.0f, -1.0f, 1.0f), Vector3(1.0f,0.0f,0.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(1.0f, -1.0f, -1.0f), Vector3(1.0f,0.0f,0.0f), Vector2(0.0f, 1.0f)},
 		
 		// Back
-		{ Vector3(1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
-		{ Vector3(-1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
-		{ Vector3(-1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
-		{ Vector3(1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
+		{ Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f,0.0f,1.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.0f,0.0f,1.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(0.0f,0.0f,1.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(1.0f, -1.0f, 1.0f), Vector3(0.0f,0.0f,1.0f), Vector2(0.0f, 1.0f)},
 
 		// Left
-		{ Vector3(-1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
-		{ Vector3(-1.0f, 1.0f, -1.0f), 1.0f, 0.0f},
-		{ Vector3(-1.0f, -1.0f, -1.0f), 1.0f, 1.0f},
-		{ Vector3(-1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
+		{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(-1.0f, 0.0f, 0.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(-1.0f, 0.0f, 0.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(-1.0f, 0.0f, 0.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(-1.0f, 0.0f, 0.0f), Vector2(0.0f, 1.0f)},
 
 		// Bottom
-		{ Vector3(-1.0f, -1.0f, -1.0f), 0.0f, 0.0f},
-		{ Vector3(1.0f, -1.0f, -1.0f), 1.0f, 0.0f},
-		{ Vector3(1.0f, -1.0f, 1.0f), 1.0f, 1.0f},
-		{ Vector3(-1.0f, -1.0f, 1.0f), 0.0f, 1.0f},
+		{ Vector3(-1.0f, -1.0f, -1.0f), Vector3(0.0f, -1.0f, 0.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(1.0f, -1.0f, -1.0f), Vector3(0.0f, -1.0f, 0.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(1.0f, -1.0f, 1.0f), Vector3(0.0f, -1.0f, 0.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(-1.0f, -1.0f, 1.0f), Vector3(0.0f, -1.0f, 0.0f), Vector2(0.0f, 1.0f)},
 
 		// Top
-		{ Vector3(-1.0f, 1.0f, 1.0f), 0.0f, 0.0f},
-		{ Vector3(1.0f, 1.0f, 1.0f), 1.0f, 0.0f},
-		{ Vector3(1.0f, 1.0f, -1.0f), 1.0f, 1.0f},
-		{ Vector3(-1.0f, 1.0f, -1.0f), 0.0f, 1.0f},
+		{ Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 0.0f)},
+		{ Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 0.0f)},
+		{ Vector3(1.0f, 1.0f, -1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(1.0f, 1.0f)},
+		{ Vector3(-1.0f, 1.0f, -1.0f), Vector3(0.0f, 1.0f, 0.0f), Vector2(0.0f, 1.0f)},
 	};
 	const Vertex vColor[] =
 	{
@@ -171,14 +171,20 @@ void App::Init()
 
 	PointLightData* light1 = AllocateLight();
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
-	light1->position = Vector3(0.0f, 5.0f, 1.0f);
+	light1->position = Vector3(-5.0f, -5.0f, -5.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
+	PointLightData* light2 = AllocateLight();
+	light2->lightColor = Vector3(1.0f, 1.0f, 0.2f);
+	light2->position = Vector3(5.0f, 5.0f, 5.0f);
+	light2->innerRadius = 20.0f;
+	light2->outerRadius = 200.0f;
 
+	mLightConsts;
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexTexture), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
+	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
 	//AddRenderObj(testCube);
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
@@ -258,6 +264,7 @@ void App::LoadShaders()
 	const D3D11_INPUT_ELEMENT_DESC tex[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	texturedShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, tex, sizeof(tex) / sizeof(tex[0]));
