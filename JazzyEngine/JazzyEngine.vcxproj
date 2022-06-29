@@ -168,6 +168,7 @@
     <ClInclude Include="Source\VertexBuffer.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\WICTextureLoader.h" />
+    <ClInclude Include="Source\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Material.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Source\VertexBuffer.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\WICTextureLoader.cpp" />
+    <ClCompile Include="Source\Sphere.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

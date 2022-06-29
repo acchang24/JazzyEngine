@@ -11,8 +11,8 @@
 #include "AssetManager.h"
 #include "Material.h"
 
-#define WINWIDTH 1280
-#define WINHEIGHT 720
+#define WINWIDTH 1600
+#define WINHEIGHT 900
 
 App::App()
 	: testCube(nullptr)
@@ -188,7 +188,7 @@ void App::Init()
 	//AddRenderObj(testCube);
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
-	for (int i = 0; i < 80; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		Cube* newCube = new Cube();
 		AddRenderObj(newCube);
@@ -600,8 +600,8 @@ void App::Update(float deltaTime)
 	Vector3 whtathefuck = testCube->GetPos();
 
 	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale())
-		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle)
-		* Matrix4::CreateRotationX(0.25f * angle)
+		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(0)
+		* Matrix4::CreateRotationX(0)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
 	testCube->mObjConsts.modelToWorld = transform;

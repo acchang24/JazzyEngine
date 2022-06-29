@@ -51,5 +51,5 @@ float4 main(VertexOut psIn) : SV_TARGET
 
 	float4 finalLight = float4(ambientColor + diffuseLight + specularLight, 1.0f);
 
-	return finalLight * psIn.color;
+	return psIn.color;
 }
