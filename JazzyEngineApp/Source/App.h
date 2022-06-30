@@ -48,6 +48,7 @@ public:
 
 private:
 	Sphere* sphere;
+	Sphere* sphere2 = nullptr;
 
 	RenderObj* testCube;
 

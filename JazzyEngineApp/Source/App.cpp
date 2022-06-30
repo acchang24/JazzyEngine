@@ -177,17 +177,21 @@ void App::Init()
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
-	/*PointLightData* light2 = AllocateLight();
+	PointLightData* light2 = AllocateLight();
 	light2->lightColor = Vector3(1.0f, 1.0f, 0.2f);
-	light2->position = Vector3(5.0f, 5.0f, 5.0f);
+	light2->position = Vector3(22.0f, 15.0f, 25.0f);
 	light2->innerRadius = 20.0f;
-	light2->outerRadius = 200.0f;*/
+	light2->outerRadius = 50.0f;
 
 	mLightConsts;
 
 	sphere = new Sphere();
 	sphere->CreateSphere();
 	sphere->SetPos(Vector3(0.0f, 5.0f, 0.0f));
+	sphere2 = new Sphere();
+	sphere2->CreateSphere();
+	sphere2->SetPos(Vector3(22.0f, 15.0f, 25.0f));
+
 
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
@@ -238,7 +242,7 @@ void App::ShutDown()
 	{
 		lightConstBuffer->Release();
 	}
-
+	delete sphere2;
 	delete sphere;
 	delete testCube;
 
@@ -616,13 +620,14 @@ void App::Update(float deltaTime)
 	testCube->SetPos(Vector3(testCube->GetPos().x, testCube->GetPos().y, zoom));
 
 	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale())
-		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(0)
-		* Matrix4::CreateRotationX(0)
+		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle)
+		* Matrix4::CreateRotationX(0.25f * angle)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
 	testCube->mObjConsts.modelToWorld = transform;
 
 	sphere->Update(deltaTime);
+	sphere2->Update(deltaTime);
 }
 
 void App::RenderFrame()
@@ -650,6 +655,7 @@ void App::RenderFrame()
 	phongMaterial->SetActive();
 
 	sphere->Draw();
+	sphere2->Draw();
 
 	//hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 
