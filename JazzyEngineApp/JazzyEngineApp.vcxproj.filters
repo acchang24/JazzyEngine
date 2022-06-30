@@ -138,5 +138,7 @@
     <FxCompile Include="Shaders\VertexShader.hlsl" />
     <FxCompile Include="Shaders\TexturedVS.hlsl" />
     <FxCompile Include="Shaders\TexturedPS.hlsl" />
+    <FxCompile Include="Shaders\SimpleVS.hlsl" />
+    <FxCompile Include="Shaders\SimplePS.hlsl" />
   </ItemGroup>
 </Project>

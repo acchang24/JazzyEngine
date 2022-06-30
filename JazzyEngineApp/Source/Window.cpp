@@ -126,6 +126,7 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		// Forward message to window class handler
 		return pWnd->HandleMessage(hWnd, msg, wParam, lParam);
 	}
+	return NULL;
 }
 
 LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)

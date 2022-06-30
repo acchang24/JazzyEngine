@@ -16,6 +16,7 @@ class Texture;
 class Camera;
 class AssetManager;
 class Material;
+class Sphere;
 
 class App
 {
@@ -46,6 +47,8 @@ public:
 	const Vector3& GetAmbientLight() const;
 
 private:
+	Sphere* sphere;
+
 	RenderObj* testCube;
 
 	std::vector<RenderObj*> renderObjects;

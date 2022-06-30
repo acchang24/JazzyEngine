@@ -1,7 +1,9 @@
 #pragma once
 #include "EngineMath.h"
 
-class Sphere
+#include "RenderObj.h"
+
+class Sphere : public RenderObj
 {
 public:
 	Sphere();

@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "AssetManager.h"
 #include "Material.h"
+#include "Sphere.h"
 
 #define WINWIDTH 1600
 #define WINHEIGHT 900
@@ -22,6 +23,7 @@ App::App()
 	, phongMaterial(nullptr)
 	, phongTexturedMaterial(nullptr)
 	, lightConstBuffer(nullptr)
+	, sphere(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -183,6 +185,10 @@ void App::Init()
 
 	mLightConsts;
 
+	sphere = new Sphere();
+	sphere->CreateSphere();
+	sphere->SetPos(Vector3(0.0f, 5.0f, 0.0f));
+
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
 	//AddRenderObj(testCube);
@@ -233,6 +239,7 @@ void App::ShutDown()
 		lightConstBuffer->Release();
 	}
 
+	delete sphere;
 	delete testCube;
 
 	if (mAssetManager)
@@ -249,6 +256,16 @@ void App::ShutDown()
 
 void App::LoadShaders()
 {
+	Shader* simple = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC simpleied[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	simple->Load(L"Shaders/SimpleVS.hlsl", ShaderType::Vertex, simpleied, sizeof(simpleied) / sizeof(simpleied[0]));
+	simple->Load(L"Shaders/SimplePS.hlsl", ShaderType::Pixel, simpleied, sizeof(simpleied) / sizeof(simpleied[0]));
+	mAssetManager->SaveShader("Simple", simple);
+
 	Shader* colored = new Shader();
 	const D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
@@ -597,7 +614,6 @@ void App::Update(float deltaTime)
 	testCube->SetYaw(angle);
 
 	testCube->SetPos(Vector3(testCube->GetPos().x, testCube->GetPos().y, zoom));
-	Vector3 whtathefuck = testCube->GetPos();
 
 	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale())
 		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(0)
@@ -605,6 +621,8 @@ void App::Update(float deltaTime)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
 	testCube->mObjConsts.modelToWorld = transform;
+
+	sphere->Update(deltaTime);
 }
 
 void App::RenderFrame()
@@ -630,6 +648,8 @@ void App::RenderFrame()
 	testCube->Draw();
 
 	phongMaterial->SetActive();
+
+	sphere->Draw();
 
 	//hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 
