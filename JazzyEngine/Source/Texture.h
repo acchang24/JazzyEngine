@@ -1,5 +1,7 @@
 #pragma once
 
+class AssetManager;
+
 class Texture
 {
 public:
@@ -11,6 +13,8 @@ public:
 	void Free();
 
 	bool Load(const WCHAR* fileName);
+
+	static Texture* StaticLoad(std::string fileName, AssetManager* pManager);
 
 	void SetActive(int slot) const;
 

@@ -58,7 +58,7 @@ private:
 
 	Camera* mCamera;
 
-	Texture* hoovy = nullptr;
+	//Texture* hoovy = nullptr;
 
 	AssetManager* mAssetManager;
 

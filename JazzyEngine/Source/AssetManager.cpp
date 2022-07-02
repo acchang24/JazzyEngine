@@ -7,6 +7,7 @@ AssetManager::AssetManager()
 {
 	sManager = this;
 	shaderCache = new Cache<Shader>(this);
+	textureCache = new Cache<Texture>(this);
 }
 
 AssetManager::~AssetManager()
@@ -18,6 +19,7 @@ AssetManager::~AssetManager()
 void AssetManager::Clear()
 {
 	shaderCache->Clear();
+	textureCache->Clear();
 }
 
 void AssetManager::SaveShader(const std::string& fileName, Shader* shader)
@@ -28,4 +30,9 @@ void AssetManager::SaveShader(const std::string& fileName, Shader* shader)
 Shader* AssetManager::GetShader(const std::string& shaderName)
 {
 	return shaderCache->Get(shaderName);
+}
+
+Texture* AssetManager::LoadTexture(const std::string& fileName)
+{
+	return textureCache->Load(fileName);
 }

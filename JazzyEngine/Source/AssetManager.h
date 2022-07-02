@@ -1,6 +1,7 @@
 #pragma once
 #include "Cache.h"
 #include "Shader.h"
+#include "Texture.h"
 
 class AssetManager
 {
@@ -17,9 +18,12 @@ public:
 	void SaveShader(const std::string& fileName, Shader* shader);
 	Shader* GetShader(const std::string& shaderName);
 
+	Texture* LoadTexture(const std::string& fileName);
+
 private:
 	static AssetManager* sManager;
 
 	Cache<Shader>* shaderCache;
+	Cache<Texture>* textureCache;
 };
 

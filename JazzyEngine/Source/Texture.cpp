@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "Graphics.h"
 #include "WICTextureLoader.h"
+#include "AssetManager.h"
 
 Texture::Texture()
 	: mResource(nullptr)
@@ -61,6 +62,21 @@ bool Texture::Load(const WCHAR* filename)
 	mHeight = textureDesc.Height;
 
 	return true;
+}
+
+Texture* Texture::StaticLoad(std::string fileName, AssetManager* pManager)
+{
+	Texture* texture = new Texture();
+	
+	std::wstring name = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>{}.from_bytes(fileName.data());
+
+	if (!texture->Load(name.c_str()))
+	{
+		delete texture;
+		return nullptr;
+	}
+
+	return texture;
 }
 
 void Texture::SetActive(int slot) const

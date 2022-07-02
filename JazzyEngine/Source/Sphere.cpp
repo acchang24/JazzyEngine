@@ -7,7 +7,7 @@
 
 Sphere::Sphere() : RenderObj()
 {
-
+	CreateSphere();
 }
 
 Sphere::~Sphere()
@@ -72,7 +72,7 @@ void Sphere::CreateSphere()
 		std::vector<float> pos;
 		for (int j = 0; j < 3; j++)
 		{
-			pos.push_back(positions[(int)i + (int)j]);
+			pos.push_back(positions[i + j]);
 		}
 		Vector3 p = Vector3(pos[0], pos[1], pos[2]);
 		Color4 c = Color4(1.0f, 1.0f, 1.0f, 1.0f);

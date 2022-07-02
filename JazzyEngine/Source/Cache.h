@@ -31,10 +31,25 @@ public:
 		{
 			return mAssetMap[name];
 		}
-		HRESULT hr = S_FALSE;
-		DbgAssert(hr == S_OK, "Could not find the loaded shader\n Check the shader name");
+		DbgAssert(false, "Could not find the loaded shader\n Check the shader name");
 		return nullptr;
 	}
+
+	T* Load(const std::string& fileName)
+	{
+		if (mAssetMap.find(fileName) != mAssetMap.end())
+		{
+			return mAssetMap[fileName];
+		}
+
+		T* asset = T::StaticLoad(fileName, mManager);
+		if (asset)
+		{
+			StoreCache(fileName, asset);
+		}
+		return asset;
+	}
+
 
 	void Clear()
 	{

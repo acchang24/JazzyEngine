@@ -150,8 +150,10 @@ void App::Init()
 		22, 23, 20,
 	};
 
-	hoovy = new Texture();
-	hoovy->Load(L"Assets/Textures/hoovy.jpg");
+	mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg");
+
+	//hoovy = new Texture();
+	//hoovy->Load(L"Assets/Textures/hoovy.jpg");
 
 	LoadShaders();
 
@@ -162,7 +164,7 @@ void App::Init()
 	phongMaterial->SetSpecularPower(10.0f);
 	
 	phongTexturedMaterial->SetShader(mAssetManager->GetShader("Textured"));
-	phongTexturedMaterial->SetTexture(0, hoovy);
+	phongTexturedMaterial->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
 	phongTexturedMaterial->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
 	phongTexturedMaterial->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
 	phongTexturedMaterial->SetSpecularPower(10.0f);
@@ -177,8 +179,9 @@ void App::Init()
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
+
 	PointLightData* light2 = AllocateLight();
-	light2->lightColor = Vector3(1.0f, 1.0f, 0.2f);
+	light2->lightColor = Vector3(0.7f, 0.1f, 0.1f);
 	light2->position = Vector3(22.0f, 15.0f, 25.0f);
 	light2->innerRadius = 20.0f;
 	light2->outerRadius = 50.0f;
@@ -186,10 +189,8 @@ void App::Init()
 	mLightConsts;
 
 	sphere = new Sphere();
-	sphere->CreateSphere();
 	sphere->SetPos(Vector3(0.0f, 5.0f, 0.0f));
 	sphere2 = new Sphere();
-	sphere2->CreateSphere();
 	sphere2->SetPos(Vector3(22.0f, 15.0f, 25.0f));
 
 
@@ -223,10 +224,10 @@ void App::ShutDown()
 		delete mCamera;
 	}
 
-	if (hoovy)
+	/*if (hoovy)
 	{
 		delete hoovy;
-	}
+	}*/
 
 	if (phongMaterial)
 	{
@@ -293,15 +294,15 @@ void App::LoadShaders()
 	texturedShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, tex, sizeof(tex) / sizeof(tex[0]));
 	mAssetManager->SaveShader("Textured", texturedShader);
 
-	// Colored Cube shader
-	Shader* color = new Shader();
-	const D3D11_INPUT_ELEMENT_DESC colorIed[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	color->Load(L"Shaders/CubeVS.hlsl", ShaderType::Vertex, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
-	color->Load(L"Shaders/CubePS.hlsl", ShaderType::Pixel, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
-	mAssetManager->SaveShader("ColorCube", color);
+	//// Colored Cube shader
+	//Shader* color = new Shader();
+	//const D3D11_INPUT_ELEMENT_DESC colorIed[] =
+	//{
+	//	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	//};
+	//color->Load(L"Shaders/CubeVS.hlsl", ShaderType::Vertex, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
+	//color->Load(L"Shaders/CubePS.hlsl", ShaderType::Pixel, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
+	//mAssetManager->SaveShader("ColorCube", color);
 }
 
 int App::Run()
@@ -412,7 +413,7 @@ int App::Run()
 
 		ProcessInput(deltaTime);
 
-		Update(deltaTime * f);
+		Update(deltaTime);
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -526,12 +527,12 @@ void App::ProcessInput(float deltaTime)
 		const auto e = wnd->mMouse->Read();
 		switch (e.GetType())
 		{
-		case Mouse::Event::Type::WheelUp:
+		/*case Mouse::Event::Type::WheelUp:
 			zoom += 0.2f;
 			break;
 		case Mouse::Event::Type::WheelDown:
 			zoom -= 0.2f;
-			break;
+			break;*/
 		}
 	}
 	if (!isPaused)
@@ -672,6 +673,9 @@ void App::AddRenderObj(RenderObj* obj)
 
 PointLightData* App::AllocateLight()
 {
+	/*Sphere* newSphere = new Sphere();
+	AddRenderObj(newSphere);*/
+
 	PointLightData* returnLight = nullptr;
 
 	for (int i = 0; i < ARRAY_SIZE(mLightConsts.pointLight); i++)
