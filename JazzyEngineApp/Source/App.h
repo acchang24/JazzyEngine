@@ -38,7 +38,7 @@ public:
 	void AddRenderObj(RenderObj* obj);
 
 	// Light stuff
-	PointLightData* AllocateLight();
+	PointLightData* AllocateLight(Vector3 lightPos);
 	void FreeLight(PointLightData* pLight);
 	void SetAmbientLight(const Vector3& color);
 	const Vector3& GetAmbientLight() const;

@@ -151,30 +151,15 @@ void App::Init()
 	// Set ambient light
 	SetAmbientLight(Vector3(0.1f,0.1f,0.1f));
 
-	PointLightData* light1 = AllocateLight();
+	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,0.0f));
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
-	light1->position = Vector3(0.0f, 5.0f, 0.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
-
-	PointLightData* light2 = AllocateLight();
+	PointLightData* light2 = AllocateLight(Vector3(22.0f,15.0f,25.0f));
 	light2->lightColor = Vector3(0.7f, 0.7f, 0.7f);
-	light2->position = Vector3(22.0f, 15.0f, 25.0f);
 	light2->innerRadius = 20.0f;
 	light2->outerRadius = 50.0f;
-
-
-	Sphere* sphere = new Sphere();
-	AddRenderObj(sphere);
-	sphere->SetPos(Vector3(0.0f, 5.0f, 0.0f));
-
-	Sphere* sphere2 = new Sphere();
-	AddRenderObj(sphere2);
-	sphere2->SetPos(Vector3(22.0f, 15.0f, 25.0f));
-
-	sphere->SetMaterial(mAssetManager->GetMaterial("PointLight"));
-	sphere2->SetMaterial(mAssetManager->GetMaterial("PointLight"));
 
 	// Create a render objects
 	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("PootisCube"));
@@ -631,10 +616,13 @@ void App::AddRenderObj(RenderObj* obj)
 	renderObjects.push_back(obj);
 }
 
-PointLightData* App::AllocateLight()
+PointLightData* App::AllocateLight(Vector3 lightPos)
 {
-	/*Sphere* newSphere = new Sphere();
-	AddRenderObj(newSphere);*/
+	// Create a sphere set its material for the point light
+	Sphere* sphere = new Sphere();
+	AddRenderObj(sphere);
+	sphere->SetPos(lightPos);
+	sphere->SetMaterial(mAssetManager->GetMaterial("PointLight"));
 
 	PointLightData* returnLight = nullptr;
 
@@ -644,6 +632,7 @@ PointLightData* App::AllocateLight()
 		{
 			mLightConsts.pointLight[i].isEnabled = true;
 			returnLight = &mLightConsts.pointLight[i];
+			returnLight->position = lightPos;
 			return returnLight;
 		}
 	}
