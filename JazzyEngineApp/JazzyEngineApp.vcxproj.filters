@@ -132,13 +132,13 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\CubePS.hlsl" />
-    <FxCompile Include="Shaders\CubeVS.hlsl" />
     <FxCompile Include="Shaders\PixelShader.hlsl" />
     <FxCompile Include="Shaders\VertexShader.hlsl" />
     <FxCompile Include="Shaders\TexturedVS.hlsl" />
     <FxCompile Include="Shaders\TexturedPS.hlsl" />
-    <FxCompile Include="Shaders\SimpleVS.hlsl" />
     <FxCompile Include="Shaders\SimplePS.hlsl" />
+    <FxCompile Include="Shaders\SimpleVS.hlsl" />
+    <FxCompile Include="Shaders\PhongVS.hlsl" />
+    <FxCompile Include="Shaders\PhongPS.hlsl" />
   </ItemGroup>
 </Project>

@@ -25,13 +25,14 @@ public:
 		mAssetMap[key] = asset;
 	}
 
+	// Return a cached asset by name
 	T* Get(const std::string name)
 	{
 		if (mAssetMap.find(name) != mAssetMap.end())
 		{
 			return mAssetMap[name];
 		}
-		DbgAssert(false, "Could not find the loaded shader\n Check the shader name");
+		DbgAssert(false, "Could not find the loaded asset\n Check the asset name");
 		return nullptr;
 	}
 
@@ -49,7 +50,6 @@ public:
 		}
 		return asset;
 	}
-
 
 	void Clear()
 	{

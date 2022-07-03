@@ -28,6 +28,7 @@ Material::~Material()
 
 void Material::SetActive()
 {
+	// Set the material's shader and textures to active
 	mShader->SetActive();
 
 	for (int i = 0; i < sizeof(mTextures) / sizeof(mTextures[0]); i++)
@@ -43,7 +44,7 @@ void Material::SetActive()
 	// Update the constant material buffer with current data and upload to GPU
 	graphics->UploadBuffer(mConstBuffer, &mMatConsts, sizeof(mMatConsts));
 
-	// Bind that const buffer to tthe pixel shader
+	// Bind that const buffer to the pixel shader
 	graphics->GetContext()->PSSetConstantBuffers(
 		Graphics::ConstantBuffer::CONSTANT_BUFFER_MATERIAL,
 		1,

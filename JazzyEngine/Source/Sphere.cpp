@@ -7,12 +7,12 @@
 
 Sphere::Sphere() : RenderObj()
 {
+	scale = 0.3f;
 	CreateSphere();
 }
 
 Sphere::~Sphere()
 {
-
 }
 
 void Sphere::CreateSphere()
@@ -44,10 +44,6 @@ void Sphere::CreateSphere()
 		}
 	}
 
-
-
-
-
 	// Calc The Index Positions
 	for (int i = 0; i < slices * stacks + slices; ++i) {
 		indices.push_back(uint16_t(i));
@@ -65,7 +61,6 @@ void Sphere::CreateSphere()
 
 	Vertex verts[441];
 
-	
 
 	for (int i = 0; i < positions.size(); i+=3)
 	{
@@ -86,7 +81,6 @@ void Sphere::CreateSphere()
 		verts[vhat] = v;
 	}
 
-	verts;
 
 	uint16_t test[2520];
 	for (int i = 0; i < indices.size(); i++)
@@ -106,8 +100,4 @@ void Sphere::CreateSphere()
 		D3D11_USAGE_DYNAMIC);
 
 	mObjConsts.modelToWorld = Matrix4::Identity;
-
-	mShader = AssetManager::Get()->GetShader("Simple");
-
-	scale = 0.3f;
 }

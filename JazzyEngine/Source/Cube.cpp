@@ -5,6 +5,7 @@
 #include "VertexBuffer.h"
 #include <random>
 #include "AssetManager.h"
+#include "Material.h"
 
 Cube::Cube() : RenderObj()
 {
@@ -26,7 +27,6 @@ Cube::Cube() : RenderObj()
 	theta = adist(rng);
 	phi = adist(rng);
 
-
 	mVertexBuffer = new VertexBuffer(vColor, sizeof(vColor), sizeof(VertexPosNormColor), indices, sizeof(indices), sizeof(uint16_t));
 
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
@@ -38,19 +38,10 @@ Cube::Cube() : RenderObj()
 		D3D11_USAGE_DYNAMIC);
 
 	mObjConsts.modelToWorld = Matrix4::Identity;
-
-	mShader = AssetManager::Get()->GetShader("Colored");
-
-	mConstColorBuffer = nullptr;
-	//mConstColorBuffer = Graphics::Get()->CreateGraphicsBuffer(&cb2, sizeof(cb2), 0, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 }
 
 Cube::~Cube()
 {
-	if (mConstColorBuffer)
-	{
-		mConstColorBuffer->Release();
-	}
 }
 
 void Cube::Update(float deltaTime)
@@ -72,10 +63,7 @@ void Cube::Update(float deltaTime)
 
 void Cube::Draw()
 {
-	// Set color const to pixel shader
-	Graphics::Get()->GetContext()->PSSetConstantBuffers(Graphics::ConstantBuffer::CONSTANT_BUFFER_CUBE_COLOR, 1, &mConstColorBuffer);
-
-	mShader->SetActive();
+	mMaterial->SetActive();
 
 	Graphics* graphics = Graphics::Get();
 

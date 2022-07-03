@@ -11,12 +11,8 @@ using namespace Light;
 // App is the main class that starts the game loop/engine
 
 class RenderObj;
-class Cube;
-class Texture;
 class Camera;
 class AssetManager;
-class Material;
-class Sphere;
 
 class App
 {
@@ -30,6 +26,7 @@ public:
 	void ShutDown();
 
 	void LoadShaders();
+	void LoadMaterials();
 
 	// Start game loop
 	int Run();
@@ -47,23 +44,13 @@ public:
 	const Vector3& GetAmbientLight() const;
 
 private:
-	Sphere* sphere;
-	Sphere* sphere2 = nullptr;
-
 	RenderObj* testCube;
 
 	std::vector<RenderObj*> renderObjects;
 
-	ID3D11Buffer* mConstColorBuffer;
-
 	Camera* mCamera;
 
-	//Texture* hoovy = nullptr;
-
 	AssetManager* mAssetManager;
-
-	Material* phongMaterial;
-	Material* phongTexturedMaterial;
 
 	LightingConstants mLightConsts = {};
 

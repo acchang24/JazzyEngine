@@ -3,11 +3,12 @@
 #include "Graphics.h"
 #include "VertexBuffer.h"
 #include "Shader.h"
+#include "Material.h"
 
 RenderObj::RenderObj()
 	: mVertexBuffer(nullptr)
 	, mConstBuffer(nullptr)
-	, mShader(nullptr)
+	, mMaterial(nullptr)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
@@ -15,9 +16,9 @@ RenderObj::RenderObj()
 {
 }
 
-RenderObj::RenderObj(const VertexBuffer* vBuffer, Shader* shader)
+RenderObj::RenderObj(const VertexBuffer* vBuffer, Material* material)
 	: mVertexBuffer(vBuffer)
-	, mShader(shader)
+	, mMaterial(material)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
@@ -59,7 +60,7 @@ void RenderObj::Update(float deltaTime)
 
 void RenderObj::Draw()
 {
-	mShader->SetActive();
+	mMaterial->SetActive();
 
 	Graphics* graphics = Graphics::Get();
 

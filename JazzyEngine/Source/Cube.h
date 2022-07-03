@@ -112,8 +112,6 @@ public:
 	void Draw() override;
 
 private:
-	ID3D11Buffer* mConstColorBuffer;
-
 	float phi = 0.0f;
 	float chi = 0.0f;
 	float theta = 0.0f;

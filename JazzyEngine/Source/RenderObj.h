@@ -3,6 +3,7 @@
 
 class VertexBuffer;
 class Shader;
+class Material;
 
 // Struct that matches the constants set in vertex shader
 struct ObjectConstants
@@ -14,12 +15,12 @@ class RenderObj
 {
 public:
 	RenderObj();
-	RenderObj(const VertexBuffer* vBuffer, Shader* shader);
+	RenderObj(const VertexBuffer* vBuffer, Material* material);
 	virtual ~RenderObj();
 	RenderObj(const RenderObj&) = delete;
 	RenderObj& operator=(const RenderObj&) = delete;
 
-	void SetShader(Shader* shader) { mShader = shader; }
+	void SetMaterial(Material* material) { mMaterial = material; }
 
 	float GetScale() { return scale; }
 	float GetRotation() { return rotation; }
@@ -44,8 +45,8 @@ protected:
 	const VertexBuffer* mVertexBuffer;
 	ID3D11Buffer* mConstBuffer;
 
-	// Shader
-	Shader* mShader;
+	// Material
+	Material* mMaterial;
 
 	// Object info
 	Vector3 pos;

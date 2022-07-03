@@ -17,13 +17,9 @@
 
 App::App()
 	: testCube(nullptr)
-	, mConstColorBuffer(nullptr)
 	, mCamera(nullptr)
 	, mAssetManager(nullptr)
-	, phongMaterial(nullptr)
-	, phongTexturedMaterial(nullptr)
 	, lightConstBuffer(nullptr)
-	, sphere(nullptr)
 {
 	wnd = new Window(WINWIDTH, WINHEIGHT, L"Engine");
 	running = true;
@@ -39,10 +35,6 @@ void App::Init()
 	mCamera = new Camera();
 
 	mAssetManager = new AssetManager();
-
-	phongMaterial = new Material();
-
-	phongTexturedMaterial = new Material();
 
 	lightConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mLightConsts,
@@ -152,23 +144,9 @@ void App::Init()
 
 	mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg");
 
-	//hoovy = new Texture();
-	//hoovy->Load(L"Assets/Textures/hoovy.jpg");
-
 	LoadShaders();
 
-	// Initialize the materials for objects
-	phongMaterial->SetShader(mAssetManager->GetShader("Colored"));
-	phongMaterial->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-	phongMaterial->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
-	phongMaterial->SetSpecularPower(10.0f);
-	
-	phongTexturedMaterial->SetShader(mAssetManager->GetShader("Textured"));
-	phongTexturedMaterial->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
-	phongTexturedMaterial->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-	phongTexturedMaterial->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
-	phongTexturedMaterial->SetSpecularPower(10.0f);
-
+	LoadMaterials();
 
 	// Set ambient light
 	SetAmbientLight(Vector3(0.1f,0.1f,0.1f));
@@ -181,27 +159,31 @@ void App::Init()
 
 
 	PointLightData* light2 = AllocateLight();
-	light2->lightColor = Vector3(0.7f, 0.1f, 0.1f);
+	light2->lightColor = Vector3(0.7f, 0.7f, 0.7f);
 	light2->position = Vector3(22.0f, 15.0f, 25.0f);
 	light2->innerRadius = 20.0f;
 	light2->outerRadius = 50.0f;
 
-	mLightConsts;
 
-	sphere = new Sphere();
+	Sphere* sphere = new Sphere();
+	AddRenderObj(sphere);
 	sphere->SetPos(Vector3(0.0f, 5.0f, 0.0f));
-	sphere2 = new Sphere();
+
+	Sphere* sphere2 = new Sphere();
+	AddRenderObj(sphere2);
 	sphere2->SetPos(Vector3(22.0f, 15.0f, 25.0f));
 
+	sphere->SetMaterial(mAssetManager->GetMaterial("PointLight"));
+	sphere2->SetMaterial(mAssetManager->GetMaterial("PointLight"));
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetShader("Textured"));
-	//AddRenderObj(testCube);
+	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("PootisCube"));
 	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
 	for (int i = 0; i < 100; i++)
 	{
 		Cube* newCube = new Cube();
+		newCube->SetMaterial(mAssetManager->GetMaterial("ColoredCube"));
 		AddRenderObj(newCube);
 	}
 }
@@ -214,38 +196,20 @@ void App::ShutDown()
 		renderObjects.pop_back();
 	}
 
-	if (mConstColorBuffer)
-	{
-		mConstColorBuffer->Release();
-	}
-
 	if (mCamera)
 	{
 		delete mCamera;
-	}
-
-	/*if (hoovy)
-	{
-		delete hoovy;
-	}*/
-
-	if (phongMaterial)
-	{
-		delete phongMaterial;
-	}
-
-	if (phongTexturedMaterial)
-	{
-		delete phongTexturedMaterial;
 	}
 
 	if (lightConstBuffer)
 	{
 		lightConstBuffer->Release();
 	}
-	delete sphere2;
-	delete sphere;
-	delete testCube;
+
+	if (testCube)
+	{
+		delete testCube;
+	}
 
 	if (mAssetManager)
 	{
@@ -261,48 +225,74 @@ void App::ShutDown()
 
 void App::LoadShaders()
 {
+	// Simple shader of just position and color
 	Shader* simple = new Shader();
-	const D3D11_INPUT_ELEMENT_DESC simpleied[] =
+	const D3D11_INPUT_ELEMENT_DESC simpleIed[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	simple->Load(L"Shaders/SimpleVS.hlsl", ShaderType::Vertex, simpleied, sizeof(simpleied) / sizeof(simpleied[0]));
-	simple->Load(L"Shaders/SimplePS.hlsl", ShaderType::Pixel, simpleied, sizeof(simpleied) / sizeof(simpleied[0]));
+	simple->Load(L"Shaders/SimpleVS.hlsl", ShaderType::Vertex, simpleIed, sizeof(simpleIed) / sizeof(simpleIed[0]));
+	simple->Load(L"Shaders/SimplePS.hlsl", ShaderType::Pixel, simpleIed, sizeof(simpleIed) / sizeof(simpleIed[0]));
 	mAssetManager->SaveShader("Simple", simple);
 
-	Shader* colored = new Shader();
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
+	// Shader for textured objects
+	Shader* texturedShader = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC texturedIed[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	colored->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, ied, sizeof(ied) / sizeof(ied[0]));
-	colored->Load(L"Shaders/PixelShader.hlsl", ShaderType::Pixel, ied, sizeof(ied) / sizeof(ied[0]));
-	mAssetManager->SaveShader("Colored", colored);
+	texturedShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, texturedIed, sizeof(texturedIed) / sizeof(texturedIed[0]));
+	texturedShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, texturedIed, sizeof(texturedIed) / sizeof(texturedIed[0]));
+	mAssetManager->SaveShader("Textured", texturedShader);
 
-	// Textured Shader
-	Shader* texturedShader = new Shader();
-	const D3D11_INPUT_ELEMENT_DESC tex[] =
+	// Phong Shader for textured objects + phong lighting
+	Shader* phongShader = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC phongIed[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0,  DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	texturedShader->Load(L"Shaders/TexturedVS.hlsl", ShaderType::Vertex, tex, sizeof(tex) / sizeof(tex[0]));
-	texturedShader->Load(L"Shaders/TexturedPS.hlsl", ShaderType::Pixel, tex, sizeof(tex) / sizeof(tex[0]));
-	mAssetManager->SaveShader("Textured", texturedShader);
+	phongShader->Load(L"Shaders/PhongVS.hlsl", ShaderType::Vertex, phongIed, sizeof(phongIed) / sizeof(phongIed[0]));
+	phongShader->Load(L"Shaders/PhongPS.hlsl", ShaderType::Pixel, phongIed, sizeof(phongIed) / sizeof(phongIed[0]));
+	mAssetManager->SaveShader("Phong", phongShader);
 
-	//// Colored Cube shader
-	//Shader* color = new Shader();
-	//const D3D11_INPUT_ELEMENT_DESC colorIed[] =
-	//{
-	//	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	//};
-	//color->Load(L"Shaders/CubeVS.hlsl", ShaderType::Vertex, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
-	//color->Load(L"Shaders/CubePS.hlsl", ShaderType::Pixel, colorIed, sizeof(colorIed) / sizeof(colorIed[0]));
-	//mAssetManager->SaveShader("ColorCube", color);
+	// Phong with no texture, but vertex colors
+	Shader* colorPhong = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC colorPhongIed[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	colorPhong->Load(L"Shaders/VertexShader.hlsl", ShaderType::Vertex, colorPhongIed, sizeof(colorPhongIed) / sizeof(colorPhongIed[0]));
+	colorPhong->Load(L"Shaders/PixelShader.hlsl", ShaderType::Pixel, colorPhongIed, sizeof(colorPhongIed) / sizeof(colorPhongIed[0]));
+	mAssetManager->SaveShader("ColorPhong", colorPhong);
+}
+
+void App::LoadMaterials()
+{
+	// Initialize the materials for objects
+	Material* pointLightMat = new Material();
+	pointLightMat->SetShader(mAssetManager->GetShader("Simple"));
+	mAssetManager->SaveMaterial("PointLight", pointLightMat);
+
+	Material* coloredCubeMat = new Material();
+	coloredCubeMat->SetShader(mAssetManager->GetShader("ColorPhong"));
+	coloredCubeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	coloredCubeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	coloredCubeMat->SetSpecularPower(10.0f);
+	mAssetManager->SaveMaterial("ColoredCube", coloredCubeMat);
+
+	Material* pootisCubeMat = new Material();
+	pootisCubeMat->SetShader(mAssetManager->GetShader("Phong"));
+	pootisCubeMat->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
+	pootisCubeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	pootisCubeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	pootisCubeMat->SetSpecularPower(100.0f);
+	mAssetManager->SaveMaterial("PootisCube", pootisCubeMat);
 }
 
 int App::Run()
@@ -341,21 +331,6 @@ int App::Run()
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(wnd->GetHwnd());
     ImGui_ImplDX11_Init(Graphics::Get()->GetDevice(), Graphics::Get()->GetContext());
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 
     // Our state
     bool show_demo_window = true;
@@ -525,15 +500,15 @@ void App::ProcessInput(float deltaTime)
 	while (!wnd->mMouse->IsEmpty())
 	{
 		const auto e = wnd->mMouse->Read();
-		switch (e.GetType())
+		/*switch (e.GetType())
 		{
-		/*case Mouse::Event::Type::WheelUp:
+		case Mouse::Event::Type::WheelUp:
 			zoom += 0.2f;
 			break;
 		case Mouse::Event::Type::WheelDown:
 			zoom -= 0.2f;
-			break;*/
-		}
+			break;
+		}*/
 	}
 	if (!isPaused)
 	{
@@ -610,10 +585,6 @@ void App::Update(float deltaTime)
 		o->Update(deltaTime);
 	}
 
-	Matrix4 test = Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, 10.0f));
-	test.Invert();
-	Vector3 vhat = test.GetTranslation();
-
 	testCube->SetPitch(angle * 0.25f);
 	testCube->SetRoll(0.0f);
 	testCube->SetYaw(angle);
@@ -626,9 +597,6 @@ void App::Update(float deltaTime)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
 	testCube->mObjConsts.modelToWorld = transform;
-
-	sphere->Update(deltaTime);
-	sphere2->Update(deltaTime);
 }
 
 void App::RenderFrame()
@@ -641,24 +609,16 @@ void App::RenderFrame()
 	{
 		// clear buffers
 		g->ClearBuffer(0.0f, 0.0f, 0.0f);
-
 		g->ClearDepthBuffer(g->GetDepthStencilView(), 1.0f);
 	}
 
 	mCamera->SetActive();
 
+	// Upload and bind lighting constants to the pixel shader
 	g->UploadBuffer(lightConstBuffer, &mLightConsts, sizeof(mLightConsts));
 	g->GetContext()->PSSetConstantBuffers(Graphics::CONSTANT_BUFFER_LIGHTING, 1, &lightConstBuffer);
 
-	phongTexturedMaterial->SetActive();
 	testCube->Draw();
-
-	phongMaterial->SetActive();
-
-	sphere->Draw();
-	sphere2->Draw();
-
-	//hoovy->SetActive(Graphics::TEXTURE_SLOT_DIFFUSE);
 
 	for (auto o : renderObjects)
 	{
