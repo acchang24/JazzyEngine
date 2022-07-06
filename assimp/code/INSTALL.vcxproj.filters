@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Dev\Jazzy Engine\assimp\CMakeFiles\b75eae14d9018ef9af8b0e16528d7d66\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{1C9203A4-3528-313E-BD3B-22E0A7B45194}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

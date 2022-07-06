@@ -11,6 +11,7 @@
 #include "AssetManager.h"
 #include "Material.h"
 #include "Sphere.h"
+#include "ModelImporter.h"
 
 #define WINWIDTH 1600
 #define WINHEIGHT 900
@@ -35,6 +36,10 @@ void App::Init()
 	mCamera = new Camera();
 
 	mAssetManager = new AssetManager();
+
+	mModImp = new ModelImporter();
+
+	mModImp->CreateModel("Assets/Models/suzzane.obj");
 
 	lightConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mLightConsts,
@@ -194,6 +199,11 @@ void App::ShutDown()
 	if (testCube)
 	{
 		delete testCube;
+	}
+
+	if (mModImp)
+	{
+		delete mModImp;
 	}
 
 	if (mAssetManager)

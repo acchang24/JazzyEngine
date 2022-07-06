@@ -13,6 +13,7 @@ using namespace Light;
 class RenderObj;
 class Camera;
 class AssetManager;
+class ModelImporter;
 
 class App
 {
@@ -51,6 +52,8 @@ private:
 	Camera* mCamera;
 
 	AssetManager* mAssetManager;
+
+	ModelImporter* mModImp = nullptr;
 
 	LightingConstants mLightConsts = {};
 
