@@ -1,4 +1,6 @@
 #pragma once
+#include "../Tools/DirectXTK/Inc/DDSTextureLoader.h"
+#include "../Tools/DirectXTK/Inc/WICTextureLoader.h"
 
 class AssetManager;
 

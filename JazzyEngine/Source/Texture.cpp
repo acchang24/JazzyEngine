@@ -2,8 +2,6 @@
 #include "Texture.h"
 #include "Graphics.h"
 #include "AssetManager.h"
-#include "DirectXTK\Inc\DDSTextureLoader.h"
-#include "DirectXTK\Inc\WICTextureLoader.h"
 
 Texture::Texture()
 	: mResource(nullptr)
