@@ -1,6 +1,6 @@
 #pragma once
 #include "EngineMath.h"
-
+#include "VertexFormats.h"
 #include "RenderObj.h"
 
 class Sphere : public RenderObj
@@ -14,5 +14,6 @@ public:
 	void CreateSphere();
 
 private:
+
 };
 

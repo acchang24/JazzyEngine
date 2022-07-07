@@ -45,7 +45,7 @@ public:
 	const Vector3& GetAmbientLight() const;
 
 private:
-	RenderObj* testCube;
+	//RenderObj* testCube;
 
 	std::vector<RenderObj*> renderObjects;
 

@@ -53,6 +53,9 @@ VertexBuffer::~VertexBuffer()
 
 void VertexBuffer::Draw() const
 {
+
+	mVertexCount;
+
 	ID3D11DeviceContext* devCon = Graphics::Get()->GetContext();
 
 	UINT offset = 0;

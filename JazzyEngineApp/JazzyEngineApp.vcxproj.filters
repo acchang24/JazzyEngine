@@ -140,5 +140,7 @@
     <FxCompile Include="Shaders\SimpleVS.hlsl" />
     <FxCompile Include="Shaders\PhongVS.hlsl" />
     <FxCompile Include="Shaders\PhongPS.hlsl" />
+    <FxCompile Include="Shaders\SimpleLitVS.hlsl" />
+    <FxCompile Include="Shaders\SimpleLitPS.hlsl" />
   </ItemGroup>
 </Project>

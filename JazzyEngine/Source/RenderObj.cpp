@@ -16,6 +16,22 @@ RenderObj::RenderObj()
 {
 }
 
+RenderObj::RenderObj(const VertexBuffer* vBuffer) 
+	: mVertexBuffer(vBuffer)
+	, mMaterial(nullptr)
+	, pos(Vector3::Zero)
+	, scale(1.0f)
+	, rotation(0.0f)
+{
+	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
+		&mObjConsts,
+		sizeof(mObjConsts),
+		0,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		D3D11_USAGE_DYNAMIC);
+}
+
 RenderObj::RenderObj(const VertexBuffer* vBuffer, Material* material)
 	: mVertexBuffer(vBuffer)
 	, mMaterial(material)

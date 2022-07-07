@@ -25,6 +25,12 @@ struct VertexTexture
     Vector2 uv;
 };
 
+struct VertexPosNorm
+{
+    Vector3 pos;
+    Vector3 normal;
+};
+
 struct VertexPosNormUV
 {
     Vector3 pos;

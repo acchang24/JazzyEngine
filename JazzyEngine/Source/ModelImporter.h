@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../assimp/include/assimp/Importer.hpp"
-#include "../assimp/include/assimp/scene.h"
-#include "../assimp/include/assimp/postprocess.h"
+class RenderObj;
 
 class ModelImporter
 {
@@ -10,7 +8,10 @@ public:
 	ModelImporter();
 	~ModelImporter();
 
-	void CreateModel(const std::string& fileName);
+	ModelImporter(const ModelImporter&) = delete;
+	ModelImporter& operator=(const ModelImporter&) = delete;
+
+	RenderObj* CreateModel(const std::string& fileName);
 private:
 };
 

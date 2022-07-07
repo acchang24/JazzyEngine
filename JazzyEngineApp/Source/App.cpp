@@ -17,8 +17,8 @@
 #define WINHEIGHT 900
 
 App::App()
-	: testCube(nullptr)
-	, mCamera(nullptr)
+	: //testCube(nullptr)
+	 mCamera(nullptr)
 	, mAssetManager(nullptr)
 	, lightConstBuffer(nullptr)
 {
@@ -38,8 +38,6 @@ void App::Init()
 	mAssetManager = new AssetManager();
 
 	mModImp = new ModelImporter();
-
-	mModImp->CreateModel("Assets/Models/suzzane.obj");
 
 	lightConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mLightConsts,
@@ -153,6 +151,13 @@ void App::Init()
 
 	LoadMaterials();
 
+	RenderObj* monke = mModImp->CreateModel("Assets/Models/suzanne.obj");
+	monke->SetMaterial(mAssetManager->GetMaterial("Monke"));
+	AddRenderObj(monke);
+	monke->SetPos(Vector3(0.0f, 0.0f, 1.0f));
+	monke->SetYaw(Math::Pi);
+
+
 	// Set ambient light
 	SetAmbientLight(Vector3(0.1f,0.1f,0.1f));
 
@@ -167,8 +172,8 @@ void App::Init()
 	light2->outerRadius = 50.0f;
 
 	// Create a render objects
-	testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("PootisCube"));
-	testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
+	//testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("PootisCube"));
+	//testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
 	
 	for (int i = 0; i < 100; i++)
 	{
@@ -196,10 +201,10 @@ void App::ShutDown()
 		lightConstBuffer->Release();
 	}
 
-	if (testCube)
+	/*if (testCube)
 	{
 		delete testCube;
-	}
+	}*/
 
 	if (mModImp)
 	{
@@ -230,6 +235,16 @@ void App::LoadShaders()
 	simple->Load(L"Shaders/SimpleVS.hlsl", ShaderType::Vertex, simpleIed, sizeof(simpleIed) / sizeof(simpleIed[0]));
 	simple->Load(L"Shaders/SimplePS.hlsl", ShaderType::Pixel, simpleIed, sizeof(simpleIed) / sizeof(simpleIed[0]));
 	mAssetManager->SaveShader("Simple", simple);
+
+	Shader* simpleLit = new Shader();
+	const D3D11_INPUT_ELEMENT_DESC simpleLitIed[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	simpleLit->Load(L"Shaders/SimpleLitVS.hlsl", ShaderType::Vertex, simpleLitIed, sizeof(simpleLitIed) / sizeof(simpleLitIed[0]));
+	simpleLit->Load(L"Shaders/SimpleLitPS.hlsl", ShaderType::Pixel, simpleLitIed, sizeof(simpleLitIed) / sizeof(simpleLitIed[0]));
+	mAssetManager->SaveShader("SimpleLit", simpleLit);
 
 	// Shader for textured objects
 	Shader* texturedShader = new Shader();
@@ -273,6 +288,13 @@ void App::LoadMaterials()
 	Material* pointLightMat = new Material();
 	pointLightMat->SetShader(mAssetManager->GetShader("Simple"));
 	mAssetManager->SaveMaterial("PointLight", pointLightMat);
+
+	Material* monkeMat = new Material();
+	monkeMat->SetShader(mAssetManager->GetShader("SimpleLit"));
+	monkeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	monkeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	monkeMat->SetSpecularPower(100.0f);
+	mAssetManager->SaveMaterial("Monke", monkeMat);
 
 	Material* coloredCubeMat = new Material();
 	coloredCubeMat->SetShader(mAssetManager->GetShader("ColorPhong"));
@@ -368,9 +390,9 @@ int App::Run()
 		camPanSpeed /= f;
 		Vector3 q = mCamera->mCamConsts.position;
 		q.Normalize();
-		Vector3 t = testCube->GetPos();
-		t.Normalize();
-		float dot = Dot(q, t);
+		//Vector3 t = testCube->GetPos();
+		//t.Normalize();
+		//float dot = Dot(q, t);
 
 		if (isPaused)
 		{
@@ -416,7 +438,7 @@ int App::Run()
 			ImGui::Text("Camera Type: %s", type.c_str());
 
 			ImGui::Text("Zoom: %f", zoom);
-			ImGui::Text("Dot angle: %f", dot);
+			//ImGui::Text("Dot angle: %f", dot);
 
 			ImGui::Text("Cam Fwd: %.2f, %.2f, %.2f", mCamera->cameraForward.x, mCamera->cameraForward.y, mCamera->cameraForward.z);
 			ImGui::Text("Cam Rot: yaw = %i, pitch = %i, roll = %i", 
@@ -424,7 +446,7 @@ int App::Run()
 				(int)Math::ToDegrees(mCamera->pitch) % 360, 
 				(int)Math::ToDegrees(mCamera->roll) % 360);
 			
-			ImGui::Text("Cube pos: %.2f,%.2f,%.2f", testCube->GetPos().x, testCube->GetPos().y, testCube->GetPos().z);
+			//ImGui::Text("Cube pos: %.2f,%.2f,%.2f", testCube->GetPos().x, testCube->GetPos().y, testCube->GetPos().z);
 
 			ImGui::Text("Camera pos: %.2f,%.2f,%.2f", mCamera->mCamConsts.position.x, mCamera->mCamConsts.position.y, mCamera->mCamConsts.position.z);
 		
@@ -444,7 +466,7 @@ int App::Run()
 			{
 				f = 1.0f;
 				prevSpeed = 1.0f;
-				testCube->SetPos(Vector3(0.0f, 0.0f, 1.0f));
+				//testCube->SetPos(Vector3(0.0f, 0.0f, 1.0f));
 				zoom = 1.0f;
 				mCamera->ResetCamera();
 			}
@@ -580,7 +602,7 @@ void App::Update(float deltaTime)
 		o->Update(deltaTime);
 	}
 
-	testCube->SetPitch(angle * 0.25f);
+	/*testCube->SetPitch(angle * 0.25f);
 	testCube->SetRoll(0.0f);
 	testCube->SetYaw(angle);
 
@@ -591,7 +613,7 @@ void App::Update(float deltaTime)
 		* Matrix4::CreateRotationX(0.25f * angle)
 		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
 		
-	testCube->mObjConsts.modelToWorld = transform;
+	testCube->mObjConsts.modelToWorld = transform;*/
 }
 
 void App::RenderFrame()
@@ -613,7 +635,7 @@ void App::RenderFrame()
 	g->UploadBuffer(lightConstBuffer, &mLightConsts, sizeof(mLightConsts));
 	g->GetContext()->PSSetConstantBuffers(Graphics::CONSTANT_BUFFER_LIGHTING, 1, &lightConstBuffer);
 
-	testCube->Draw();
+	//testCube->Draw();
 
 	for (auto o : renderObjects)
 	{

@@ -15,6 +15,7 @@ class RenderObj
 {
 public:
 	RenderObj();
+	RenderObj(const VertexBuffer* vBuffer);
 	RenderObj(const VertexBuffer* vBuffer, Material* material);
 	virtual ~RenderObj();
 	RenderObj(const RenderObj&) = delete;

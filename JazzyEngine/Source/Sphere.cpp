@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Sphere.h"
-#include "VertexFormats.h"
 #include "VertexBuffer.h"
 #include "Graphics.h"
 #include "AssetManager.h"
