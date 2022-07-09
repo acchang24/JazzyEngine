@@ -157,9 +157,8 @@ void App::Init()
 	monke->SetPos(Vector3(0.0f, 0.0f, 1.0f));
 	monke->SetYaw(Math::Pi);
 
-
 	// Set ambient light
-	SetAmbientLight(Vector3(0.1f,0.1f,0.1f));
+	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
 
 	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,0.0f));
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
@@ -292,7 +291,7 @@ void App::LoadMaterials()
 	Material* monkeMat = new Material();
 	monkeMat->SetShader(mAssetManager->GetShader("SimpleLit"));
 	monkeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-	monkeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	monkeMat->SetSpecularColor(Vector3(.0f, 1.0f, 1.0f));
 	monkeMat->SetSpecularPower(100.0f);
 	mAssetManager->SaveMaterial("Monke", monkeMat);
 
