@@ -21,6 +21,7 @@ public:
 	RenderObj(const RenderObj&) = delete;
 	RenderObj& operator=(const RenderObj&) = delete;
 
+	Material* GetMaterial() { return mMaterial; }
 	void SetMaterial(Material* material) { mMaterial = material; }
 
 	float GetScale() { return scale; }

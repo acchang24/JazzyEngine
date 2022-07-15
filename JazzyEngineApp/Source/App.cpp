@@ -31,8 +31,21 @@ App::~App()
 
 }
 
+void App::f()
+{
+	VertexFormat v1;
+	v1.Append<VertexFormat::ElementType::Pos3D>();
+	v1.Append<VertexFormat::ElementType::Normal>();
+
+	VBuffer vb(std::move(v1));
+	//vb.EmplaceBack(Vector3(1.0f, 1.0f, 5.0f), Vector3(2.0f, 1.0f, 4.0f));
+	//auto pos = vb[0].Attr<VertexFormat::ElementType::Pos3D>();
+}
+
 void App::Init()
 {
+	f();
+
 	mCamera = new Camera();
 
 	mAssetManager = new AssetManager();
@@ -151,11 +164,17 @@ void App::Init()
 
 	LoadMaterials();
 
-	RenderObj* monke = mModImp->CreateModel("Assets/Models/suzanne.obj");
-	monke->SetMaterial(mAssetManager->GetMaterial("Monke"));
-	AddRenderObj(monke);
-	monke->SetPos(Vector3(0.0f, 0.0f, 1.0f));
-	monke->SetYaw(Math::Pi);
+	RenderObj* squid = mModImp->CreateModel("Assets/Models/Squidward/squidward.obj");
+	//monke->SetMaterial(mAssetManager->GetMaterial("Phong"));
+	//monke->GetMaterial()->SetShader(mAssetManager->GetShader("Phong"));
+	//monke->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Models/Mr. Krabs/mrkrabs.png"));
+	AddRenderObj(squid);
+	squid->SetScale(0.3f);
+	squid->SetPos(Vector3(0.0f, 0.0f, 1.0f));
+	squid->SetYaw(Math::Pi);
+
+
+
 
 	// Set ambient light
 	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
@@ -291,7 +310,7 @@ void App::LoadMaterials()
 	Material* monkeMat = new Material();
 	monkeMat->SetShader(mAssetManager->GetShader("SimpleLit"));
 	monkeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-	monkeMat->SetSpecularColor(Vector3(.0f, 1.0f, 1.0f));
+	monkeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
 	monkeMat->SetSpecularPower(100.0f);
 	mAssetManager->SaveMaterial("Monke", monkeMat);
 
@@ -302,13 +321,13 @@ void App::LoadMaterials()
 	coloredCubeMat->SetSpecularPower(10.0f);
 	mAssetManager->SaveMaterial("ColoredCube", coloredCubeMat);
 
-	Material* pootisCubeMat = new Material();
-	pootisCubeMat->SetShader(mAssetManager->GetShader("Phong"));
-	pootisCubeMat->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
-	pootisCubeMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-	pootisCubeMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
-	pootisCubeMat->SetSpecularPower(100.0f);
-	mAssetManager->SaveMaterial("PootisCube", pootisCubeMat);
+	Material* phongMat = new Material();
+	phongMat->SetShader(mAssetManager->GetShader("Phong"));
+	//pootisCubeMat->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
+	phongMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+	phongMat->SetSpecularPower(100.0f);
+	mAssetManager->SaveMaterial("Phong", phongMat);
 }
 
 int App::Run()

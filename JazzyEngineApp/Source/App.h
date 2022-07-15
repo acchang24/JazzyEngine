@@ -23,6 +23,8 @@ public:
 	App(const App&) = delete;
 	App& operator=(const App&) = delete;
 
+	void f();
+
 	void Init();
 	void ShutDown();
 

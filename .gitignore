@@ -76,7 +76,7 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
-!JazzyEngineApp/Assets/Models/*.obj
+!JazzyEngineApp/Assets/Models/**/*.obj
 *.iobj
 *.pch
 *.pdb
