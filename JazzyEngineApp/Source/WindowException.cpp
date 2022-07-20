@@ -40,8 +40,11 @@ std::string WindowException::TranslateErrorCode(HRESULT result)
 	}
 	// copy error string from windows-allocated buffer to std::string
 	std::wstring ws(pMsgBuf);
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
-	std::string s = convert.to_bytes(ws);
+	//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+	//std::string s = convert.to_bytes(ws);
+
+	std::string s((char*)pMsgBuf);
+
 	// free windows buffer
 	LocalFree(pMsgBuf);
 	return s;

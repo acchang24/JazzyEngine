@@ -10,7 +10,7 @@ Exception::Exception(int line, const char* file)
 std::wstring Exception::What() const
 {
 	std::ostringstream oss;
-	oss << GetType() << std::endl << GetOriginString();
+	oss << (char*)GetType() << std::endl << GetOriginString();
 	whatBuffer = oss.str();
 	std::wstring wide = std::wstring(whatBuffer.begin(), whatBuffer.end());
 	return wide;

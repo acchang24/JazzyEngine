@@ -66,7 +66,9 @@ Texture* Texture::StaticLoad(std::string fileName, AssetManager* pManager)
 {
 	Texture* texture = new Texture();
 
-	std::wstring name = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>{}.from_bytes(fileName.data());
+	//std::wstring name = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>{}.from_bytes(fileName.data());
+
+	std::wstring name(fileName.begin(), fileName.end());
 
 	if (!texture->Load(name.c_str()))
 	{

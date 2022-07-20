@@ -18,7 +18,7 @@
 
 App::App()
 	: //testCube(nullptr)
-	 mCamera(nullptr)
+	  mCamera(nullptr)
 	, mAssetManager(nullptr)
 	, lightConstBuffer(nullptr)
 {
@@ -33,13 +33,28 @@ App::~App()
 
 void App::f()
 {
-	VertexFormat v1;
-	v1.Append<VertexFormat::ElementType::Pos3D>();
-	v1.Append<VertexFormat::ElementType::Normal>();
+	VertexLayout v1;
+	v1.Append<VertexLayout::ElementType::Position3D>();
+	v1.Append<VertexLayout::ElementType::Normal>();
+	v1.Append<VertexLayout::ElementType::Texture2D>();
+
+	v1.Size();
 
 	VBuffer vb(std::move(v1));
-	//vb.EmplaceBack(Vector3(1.0f, 1.0f, 5.0f), Vector3(2.0f, 1.0f, 4.0f));
-	//auto pos = vb[0].Attr<VertexFormat::ElementType::Pos3D>();
+
+	vb.Size();
+
+	vb.EmplaceBack(Vector3(1.0f, 1.0f, 5.0f), Vector3(2.0f, 1.0f, 4.0f), Vector2(6.0f,9.0f));
+	vb.EmplaceBack(Vector3(6.0f, 9.0f, 6.0f), Vector3(9.0f, 6.0f, 9.0f), Vector2(4.2f, 0.0f));
+	Vector3 pos = vb[0].Attr<VertexLayout::ElementType::Position3D>();
+	Vector3 nor = vb[0].Attr<VertexLayout::ElementType::Normal>();
+	Vector2 tex = vb[1].Attr<VertexLayout::ElementType::Texture2D>();
+	vb.Back().Attr<VertexLayout::ElementType::Position3D>().z = 420.0f;
+	pos = vb.Back().Attr<VertexLayout::ElementType::Position3D>();
+	vb.SizeBytes();
+
+	const auto& cvb = vb;
+	pos = cvb[1].Attr<VertexLayout::ElementType::Position3D>();
 }
 
 void App::Init()
@@ -170,7 +185,7 @@ void App::Init()
 	//monke->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Models/Mr. Krabs/mrkrabs.png"));
 	AddRenderObj(squid);
 	squid->SetScale(0.3f);
-	squid->SetPos(Vector3(0.0f, 0.0f, 1.0f));
+	squid->SetPos(Vector3(0.0f, -1.5f, 1.0f));
 	squid->SetYaw(Math::Pi);
 
 
@@ -179,19 +194,20 @@ void App::Init()
 	// Set ambient light
 	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
 
-	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,0.0f));
+	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,-3.0f));
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
 
-	PointLightData* light2 = AllocateLight(Vector3(22.0f,15.0f,25.0f));
+	/*PointLightData* light2 = AllocateLight(Vector3(22.0f,15.0f,25.0f));
 	light2->lightColor = Vector3(0.7f, 0.7f, 0.7f);
 	light2->innerRadius = 20.0f;
-	light2->outerRadius = 50.0f;
+	light2->outerRadius = 50.0f;*/
 
 	// Create a render objects
-	//testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("PootisCube"));
+	//testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("Phong"));
 	//testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
+	//testCube->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
 	
 	for (int i = 0; i < 100; i++)
 	{
