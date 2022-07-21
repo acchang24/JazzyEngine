@@ -7,11 +7,8 @@
 #include "Mesh.h"
 
 RenderObj::RenderObj()
-	: 
-	mMesh(nullptr)
-	,mVertexBuffer(nullptr)
+	: mMesh(nullptr)
 	, mConstBuffer(nullptr)
-	, mMaterial(nullptr)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
@@ -24,8 +21,6 @@ RenderObj::RenderObj()
 
 RenderObj::RenderObj(Mesh* mesh)
 	: mMesh(mesh)
-	, mVertexBuffer(nullptr)
-	, mMaterial(nullptr)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
@@ -43,54 +38,8 @@ RenderObj::RenderObj(Mesh* mesh)
 		D3D11_USAGE_DYNAMIC);
 }
 
-RenderObj::RenderObj(const VertexBuffer* vBuffer) 
-	: 
-	mMesh(nullptr)
-	,mVertexBuffer(vBuffer)
-	, mMaterial(nullptr)
-	, pos(Vector3::Zero)
-	, scale(1.0f)
-	, rotation(0.0f)
-	, pitch(0.0f)
-	, yaw(0.0f)
-	, roll(0.0f)
-{
-	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
-		&mObjConsts,
-		sizeof(mObjConsts),
-		0,
-		D3D11_BIND_CONSTANT_BUFFER,
-		D3D11_CPU_ACCESS_WRITE,
-		D3D11_USAGE_DYNAMIC);
-}
-
-RenderObj::RenderObj(const VertexBuffer* vBuffer, Material* material)
-	: 
-	mMesh(nullptr)
-	,mVertexBuffer(vBuffer)
-	, mMaterial(material)
-	, pos(Vector3::Zero)
-	, scale(1.0f)
-	, rotation(0.0f)
-	, pitch(0.0f)
-	, yaw(0.0f)
-	, roll(0.0f)
-{
-	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
-		&mObjConsts,
-		sizeof(mObjConsts),
-		0,
-		D3D11_BIND_CONSTANT_BUFFER,
-		D3D11_CPU_ACCESS_WRITE,
-		D3D11_USAGE_DYNAMIC);
-}
-
 RenderObj::~RenderObj()
 {
-	if (mVertexBuffer)
-	{
-		delete mVertexBuffer;
-	}
 	if (mConstBuffer)
 	{
 		mConstBuffer->Release();
@@ -113,8 +62,6 @@ void RenderObj::Update(float deltaTime)
 
 void RenderObj::Draw()
 {
-	mMaterial->SetActive();
-
 	Graphics* graphics = Graphics::Get();
 
 	// Update const buffer with current data and upload tp GPU
@@ -123,5 +70,5 @@ void RenderObj::Draw()
 	// Bind constant buffer to vertex shader
 	graphics->GetContext()->VSSetConstantBuffers(Graphics::ConstantBuffer::CONSTANT_BUFFER_RENDEROBJ, 1, &mConstBuffer);
 
-	mVertexBuffer->Draw();
+	mMesh->Draw();
 }

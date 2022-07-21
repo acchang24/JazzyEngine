@@ -27,7 +27,19 @@ Cube::Cube() : RenderObj()
 	theta = adist(rng);
 	phi = adist(rng);
 
-	mVertexBuffer = new VertexBuffer(vColor, sizeof(vColor), sizeof(VertexPosNormColor), indices, sizeof(indices), sizeof(uint16_t));
+	Mesh* newMesh = AssetManager::Get()->GetMesh("Cube");
+
+	if (newMesh)
+	{
+		mMesh = newMesh;
+	}
+	else
+	{
+		mMesh = new Mesh(new VertexBuffer(vColor, sizeof(vColor), sizeof(VertexPosNormColor), indices, sizeof(indices), sizeof(uint16_t)),
+			AssetManager::Get()->GetMaterial("ColoredCube"));
+
+		AssetManager::Get()->SaveMesh("Cube", mMesh);
+	}
 
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,
@@ -63,8 +75,6 @@ void Cube::Update(float deltaTime)
 
 void Cube::Draw()
 {
-	mMaterial->SetActive();
-
 	Graphics* graphics = Graphics::Get();
 
 	// Update const buffer with current data and upload tp GPU
@@ -73,5 +83,5 @@ void Cube::Draw()
 	// Bind constant buffer to vertex shader
 	graphics->GetContext()->VSSetConstantBuffers(Graphics::ConstantBuffer::CONSTANT_BUFFER_RENDEROBJ, 1, &mConstBuffer);
 
-	mVertexBuffer->Draw();
+	mMesh->Draw();
 }

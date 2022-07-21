@@ -19,8 +19,8 @@ class VertexLayout
 public:
 	enum class ElementType
 	{
-		Position2D,
-		Position3D,
+		Pos2D,
+		Pos3D,
 		Texture2D,
 		Normal,
 		Color4D
@@ -49,9 +49,9 @@ public:
 		{
 			switch (type)
 			{
-			case ElementType::Position2D:
+			case ElementType::Pos2D:
 				return sizeof(Vector2);
-			case ElementType::Position3D:
+			case ElementType::Pos3D:
 				return sizeof(Vector3);
 			case ElementType::Texture2D:
 				return sizeof(Vector2);
@@ -130,11 +130,11 @@ public:
 	{
 		const auto& element = layout.Resolve<Type>();
 		auto pAttribute = pData + element.GetOffset();
-		if constexpr (Type == VertexLayout::ElementType::Position2D)
+		if constexpr (Type == VertexLayout::ElementType::Pos2D)
 		{
 			return *reinterpret_cast<Vector2*>(pAttribute);
 		}
-		else if constexpr (Type == VertexLayout::ElementType::Position3D)
+		else if constexpr (Type == VertexLayout::ElementType::Pos3D)
 		{
 			return *reinterpret_cast<Vector3*>(pAttribute);
 		}
@@ -163,10 +163,10 @@ public:
 		auto pAttribute = pData + element.GetOffset();
 		switch (element.GetType())
 		{
-		case VertexLayout::ElementType::Position2D:
+		case VertexLayout::ElementType::Pos2D:
 			SetAttribute<Vector2>(pAttribute, std::forward<T>(val));
 			break;
-		case VertexLayout::ElementType::Position3D:
+		case VertexLayout::ElementType::Pos3D:
 			SetAttribute<Vector3>(pAttribute, std::forward<T>(val));
 			break;
 		case VertexLayout::ElementType::Texture2D:

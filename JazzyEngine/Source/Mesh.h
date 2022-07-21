@@ -13,6 +13,7 @@ public:
 
 	void Draw() const;
 
+	Material* GetMaterial() { return mMaterial; }
 
 private:
 	const VertexBuffer* mVertexBuffer;

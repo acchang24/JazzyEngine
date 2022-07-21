@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "Sphere.h"
 #include "ModelImporter.h"
+#include "Mesh.h"
 
 #define WINWIDTH 1600
 #define WINHEIGHT 900
@@ -34,7 +35,7 @@ App::~App()
 void App::f()
 {
 	VertexLayout v1;
-	v1.Append<VertexLayout::ElementType::Position3D>();
+	v1.Append<VertexLayout::ElementType::Pos3D>();
 	v1.Append<VertexLayout::ElementType::Normal>();
 	v1.Append<VertexLayout::ElementType::Texture2D>();
 
@@ -46,20 +47,20 @@ void App::f()
 
 	vb.EmplaceBack(Vector3(1.0f, 1.0f, 5.0f), Vector3(2.0f, 1.0f, 4.0f), Vector2(6.0f,9.0f));
 	vb.EmplaceBack(Vector3(6.0f, 9.0f, 6.0f), Vector3(9.0f, 6.0f, 9.0f), Vector2(4.2f, 0.0f));
-	Vector3 pos = vb[0].Attr<VertexLayout::ElementType::Position3D>();
+	Vector3 pos = vb[0].Attr<VertexLayout::ElementType::Pos3D>();
 	Vector3 nor = vb[0].Attr<VertexLayout::ElementType::Normal>();
 	Vector2 tex = vb[1].Attr<VertexLayout::ElementType::Texture2D>();
-	vb.Back().Attr<VertexLayout::ElementType::Position3D>().z = 420.0f;
-	pos = vb.Back().Attr<VertexLayout::ElementType::Position3D>();
+	vb.Back().Attr<VertexLayout::ElementType::Pos3D>().z = 420.0f;
+	pos = vb.Back().Attr<VertexLayout::ElementType::Pos3D>();
 	vb.SizeBytes();
 
 	const auto& cvb = vb;
-	pos = cvb[1].Attr<VertexLayout::ElementType::Position3D>();
+	pos = cvb[1].Attr<VertexLayout::ElementType::Pos3D>();
 }
 
 void App::Init()
 {
-	f();
+	//f();
 
 	mCamera = new Camera();
 
@@ -179,7 +180,9 @@ void App::Init()
 
 	LoadMaterials();
 
-	RenderObj* squid = mModImp->CreateModel("Assets/Models/Squidward/squidward.obj");
+	Mesh* squidMesh = mModImp->CreateModel("Assets/Models/Squidward/squidward.obj");
+	RenderObj* squid = new RenderObj(squidMesh);
+
 	//monke->SetMaterial(mAssetManager->GetMaterial("Phong"));
 	//monke->GetMaterial()->SetShader(mAssetManager->GetShader("Phong"));
 	//monke->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Models/Mr. Krabs/mrkrabs.png"));
@@ -212,7 +215,7 @@ void App::Init()
 	for (int i = 0; i < 100; i++)
 	{
 		Cube* newCube = new Cube();
-		newCube->SetMaterial(mAssetManager->GetMaterial("ColoredCube"));
+		//newCube->SetMaterial(mAssetManager->GetMaterial("ColoredCube"));
 		AddRenderObj(newCube);
 	}
 }
@@ -422,11 +425,6 @@ int App::Run()
 		
 		float camPanSpeed = 3.0f;
 		camPanSpeed /= f;
-		Vector3 q = mCamera->mCamConsts.position;
-		q.Normalize();
-		//Vector3 t = testCube->GetPos();
-		//t.Normalize();
-		//float dot = Dot(q, t);
 
 		if (isPaused)
 		{
@@ -688,7 +686,6 @@ PointLightData* App::AllocateLight(Vector3 lightPos)
 	Sphere* sphere = new Sphere();
 	AddRenderObj(sphere);
 	sphere->SetPos(lightPos);
-	sphere->SetMaterial(mAssetManager->GetMaterial("PointLight"));
 
 	PointLightData* returnLight = nullptr;
 

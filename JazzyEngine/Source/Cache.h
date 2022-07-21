@@ -35,7 +35,6 @@ public:
 		{
 			return mAssetMap[name];
 		}
-		DbgAssert(false, "Could not find the loaded asset\n Check the asset name");
 		return nullptr;
 	}
 

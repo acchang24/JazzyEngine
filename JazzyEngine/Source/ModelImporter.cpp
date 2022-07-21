@@ -11,6 +11,7 @@
 #include "RenderObj.h"
 #include "Texture.h"
 #include "AssetManager.h"
+#include "Mesh.h"
 
 ModelImporter::ModelImporter()
 {
@@ -20,9 +21,11 @@ ModelImporter::~ModelImporter()
 {
 }
 
-RenderObj* ModelImporter::CreateModel(const std::string& fileName)
+Mesh* ModelImporter::CreateModel(const std::string& fileName)
 {
 	RenderObj* obj = nullptr; 
+
+	Mesh* newMesh = nullptr;
 
 	std::ifstream fin(fileName);
 	if (!fin.fail())
@@ -57,7 +60,7 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 		if (mesh->HasPositions())
 		{
 			// Add Vector3 to the dynamic vertex layout
-			vLayout.Append<VertexLayout::ElementType::Position3D>();
+			vLayout.Append<VertexLayout::ElementType::Pos3D>();
 		}
 		if (mesh->HasNormals())
 		{
@@ -92,15 +95,18 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 		{
 			const auto textureVec = &mesh->mTextureCoords[0][i];
 
-			Vector3 pos = Vector3(
+			Vector3 pos = *reinterpret_cast<Vector3*>(&mesh->mVertices[i]);
+			Vector3 norm = *reinterpret_cast<Vector3*>(&mesh->mNormals[i]);
+
+			/*Vector3 pos = Vector3(
 			mesh->mVertices[i].x,
 			mesh->mVertices[i].y,
-			mesh->mVertices[i].z);
+			mesh->mVertices[i].z);*/
 
-			Vector3 norm = Vector3(
+			/*Vector3 norm = Vector3(
 			mesh->mNormals[i].x,
 			mesh->mNormals[i].y,
-			mesh->mNormals[i].z);
+			mesh->mNormals[i].z);*/
 
 			Vector2 uv;
 
@@ -108,7 +114,6 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 			{
 				uv = Vector2(textureVec->x, 1 - textureVec->y);
 			}
-			
 
 			VertexPosNormUV v = {};
 			v.pos = pos;
@@ -119,10 +124,6 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 
 			vBuffer.EmplaceBack(pos, norm, uv);
 		}
-		/*int testaa = vBuffer.Size();
-		int testii = vBuffer.SizeBytes();
-		int testinn = vertices.size() * sizeof(VertexPosNormUV);
-		int taa = vBuffer.GetLayout().Size();*/
 
 		std::vector<uint16_t> indices;
 		indices.reserve(size_t(mesh->mNumFaces * 3));
@@ -135,13 +136,26 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 			indices.push_back(face.mIndices[2]);
 		}
 
-		obj = new RenderObj(new VertexBuffer(
+		newMesh = new Mesh(new VertexBuffer(
 			vBuffer.GetData(),
 			vBuffer.SizeBytes(),
 			vBuffer.GetLayout().Size(),
 			indices.data(),
 			indices.size() * sizeof(uint16_t),
-			sizeof(uint16_t)));
+			sizeof(uint16_t)), 
+			AssetManager::Get()->GetMaterial("Phong"));
+
+		newMesh->GetMaterial()->SetTexture(0, texture);
+		
+		AssetManager::Get()->SaveMesh(name, newMesh);
+
+		/*obj = new RenderObj(new VertexBuffer(
+			vBuffer.GetData(),
+			vBuffer.SizeBytes(),
+			vBuffer.GetLayout().Size(),
+			indices.data(),
+			indices.size() * sizeof(uint16_t),
+			sizeof(uint16_t)));*/
 
 		/*obj = new RenderObj(new VertexBuffer(
 			vertices.data(),
@@ -151,12 +165,12 @@ RenderObj* ModelImporter::CreateModel(const std::string& fileName)
 			indices.size() * sizeof(uint16_t),
 			sizeof(uint16_t)));*/
 
-		obj->SetMaterial(AssetManager::Get()->GetMaterial("Phong"));
+		//obj->SetMaterial(AssetManager::Get()->GetMaterial("Phong"));
 
-		obj->GetMaterial()->SetTexture(0, texture);
+		//obj->GetMaterial()->SetTexture(0, texture);
 
 		fin.close();
 	}
 
-	return obj;
+	return newMesh;
 }

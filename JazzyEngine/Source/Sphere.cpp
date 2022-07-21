@@ -59,7 +59,18 @@ void Sphere::CreateSphere()
 		indices.push_back(uint16_t(i + 1));
 	}
 
-	mVertexBuffer = new VertexBuffer(positions.data(), sizeof(Vertex) * positions.size(), sizeof(Vertex), indices.data(), indices.size() * sizeof(uint16_t), sizeof(uint16_t));
+	Mesh* newMesh = AssetManager::Get()->GetMesh("PointLight");
+	if (newMesh)
+	{
+		mMesh = newMesh;
+	}
+	else
+	{
+		mMesh = new Mesh(new VertexBuffer(positions.data(), sizeof(Vertex) * positions.size(), sizeof(Vertex), indices.data(), indices.size() * sizeof(uint16_t), sizeof(uint16_t)),
+			AssetManager::Get()->GetMaterial("PointLight"));
+
+		AssetManager::Get()->SaveMesh("PointLight", mMesh);
+	}
 
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,

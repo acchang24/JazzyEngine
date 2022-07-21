@@ -1,6 +1,7 @@
 #pragma once
 
 class RenderObj;
+class Mesh;
 
 class ModelImporter
 {
@@ -11,7 +12,7 @@ public:
 	ModelImporter(const ModelImporter&) = delete;
 	ModelImporter& operator=(const ModelImporter&) = delete;
 
-	RenderObj* CreateModel(const std::string& fileName);
+	Mesh* CreateModel(const std::string& fileName);
 private:
 };
 
