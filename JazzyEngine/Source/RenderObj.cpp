@@ -4,24 +4,56 @@
 #include "VertexBuffer.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Mesh.h"
 
 RenderObj::RenderObj()
-	: mVertexBuffer(nullptr)
+	: 
+	mMesh(nullptr)
+	,mVertexBuffer(nullptr)
 	, mConstBuffer(nullptr)
 	, mMaterial(nullptr)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
+	, pitch(0.0f)
+	, yaw(0.0f)
+	, roll(0.0f)
 	, forward(Vector3::Zero)
 {
 }
 
-RenderObj::RenderObj(const VertexBuffer* vBuffer) 
-	: mVertexBuffer(vBuffer)
+RenderObj::RenderObj(Mesh* mesh)
+	: mMesh(mesh)
+	, mVertexBuffer(nullptr)
 	, mMaterial(nullptr)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
+	, pitch(0.0f)
+	, yaw(0.0f)
+	, roll(0.0f)
+	, forward(Vector3::Zero)
+{
+	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
+		&mObjConsts,
+		sizeof(mObjConsts),
+		0,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		D3D11_USAGE_DYNAMIC);
+}
+
+RenderObj::RenderObj(const VertexBuffer* vBuffer) 
+	: 
+	mMesh(nullptr)
+	,mVertexBuffer(vBuffer)
+	, mMaterial(nullptr)
+	, pos(Vector3::Zero)
+	, scale(1.0f)
+	, rotation(0.0f)
+	, pitch(0.0f)
+	, yaw(0.0f)
+	, roll(0.0f)
 {
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,
@@ -33,11 +65,16 @@ RenderObj::RenderObj(const VertexBuffer* vBuffer)
 }
 
 RenderObj::RenderObj(const VertexBuffer* vBuffer, Material* material)
-	: mVertexBuffer(vBuffer)
+	: 
+	mMesh(nullptr)
+	,mVertexBuffer(vBuffer)
 	, mMaterial(material)
 	, pos(Vector3::Zero)
 	, scale(1.0f)
 	, rotation(0.0f)
+	, pitch(0.0f)
+	, yaw(0.0f)
+	, roll(0.0f)
 {
 	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mObjConsts,

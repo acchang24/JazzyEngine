@@ -4,6 +4,7 @@
 class VertexBuffer;
 class Shader;
 class Material;
+class Mesh;
 
 // Struct that matches the constants set in vertex shader
 struct ObjectConstants
@@ -15,6 +16,7 @@ class RenderObj
 {
 public:
 	RenderObj();
+	RenderObj(Mesh* mesh);
 	RenderObj(const VertexBuffer* vBuffer);
 	RenderObj(const VertexBuffer* vBuffer, Material* material);
 	virtual ~RenderObj();
@@ -43,6 +45,7 @@ public:
 	ObjectConstants mObjConsts;
 
 protected:
+	Mesh* mMesh;
 	// Buffers
 	const VertexBuffer* mVertexBuffer;
 	ID3D11Buffer* mConstBuffer;
@@ -57,8 +60,8 @@ protected:
 
 	Vector3 forward;
 
-	float pitch = 0.0f; // Rotation x
-	float yaw = 0.0f; // Rotation y
-	float roll = 0.0f; // Rotation z
+	float pitch; // Rotation x
+	float yaw; // Rotation y
+	float roll; // Rotation z
 };
 

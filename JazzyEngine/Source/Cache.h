@@ -22,7 +22,10 @@ public:
 
 	void StoreCache(const std::string& key, T* asset)
 	{
-		mAssetMap[key] = asset;
+		if (mAssetMap.find(key) == mAssetMap.end())
+		{
+			mAssetMap[key] = asset;
+		}
 	}
 
 	// Return a cached asset by name

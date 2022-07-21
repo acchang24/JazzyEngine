@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Material.h"
+#include "Mesh.h"
 
 class AssetManager
 {
@@ -22,6 +23,9 @@ public:
 	void SaveMaterial(const std::string& fileName, Material* material);
 	Material* GetMaterial(const std::string& materialName);
 
+	void SaveMesh(const std::string& fileName, Mesh* mesh);
+	Mesh* GetMesh(const std::string& meshName);
+
 	Texture* LoadTexture(const std::string& fileName);
 
 private:
@@ -30,5 +34,6 @@ private:
 	Cache<Shader>* shaderCache;
 	Cache<Texture>* textureCache;
 	Cache<Material>* materialCache;
+	Cache<Mesh>* meshCache;
 };
 
