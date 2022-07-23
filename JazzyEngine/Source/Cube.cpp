@@ -72,16 +72,3 @@ void Cube::Update(float deltaTime)
 
 	mObjConsts.modelToWorld = mat;
 }
-
-void Cube::Draw()
-{
-	Graphics* graphics = Graphics::Get();
-
-	// Update const buffer with current data and upload tp GPU
-	graphics->UploadBuffer(mConstBuffer, &mObjConsts, sizeof(mObjConsts));
-
-	// Bind constant buffer to vertex shader
-	graphics->GetContext()->VSSetConstantBuffers(Graphics::ConstantBuffer::CONSTANT_BUFFER_RENDEROBJ, 1, &mConstBuffer);
-
-	mMesh->Draw();
-}

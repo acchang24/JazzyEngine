@@ -177,7 +177,8 @@ void App::Init()
 
 	LoadMaterials();
 
-	Mesh* squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
+	//std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
+	std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/nano_textured/nanosuit.obj");
 	RenderObj* squid = new RenderObj(squidMesh);
 
 	AddRenderObj(squid);
@@ -188,10 +189,15 @@ void App::Init()
 	// Set ambient light
 	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
 
-	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,-3.0f));
+	PointLightData* light1 = AllocateLight(Vector3(0.0f,5.0f,-5.0f));
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
+
+	PointLightData* light2 = AllocateLight(Vector3(22.0f,15.0f,25.0f));
+	light2->lightColor = Vector3(0.2f, 0.7f, 0.9f);
+	light2->innerRadius = 20.0f;
+	light2->outerRadius = 50.0f;
 }
 
 void App::ShutDown()

@@ -21,11 +21,12 @@ ModelImporter::~ModelImporter()
 {
 }
 
-Mesh* ModelImporter::CreateModel(const std::string& fileName)
+std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 {
-	RenderObj* obj = nullptr; 
+	//Mesh* newMesh = nullptr;
 
-	Mesh* newMesh = nullptr;
+	std::vector<Mesh*> meshArray;
+	std::vector<Texture*> textureArray;
 
 	std::ifstream fin(fileName);
 	if (!fin.fail())
@@ -35,7 +36,7 @@ Mesh* ModelImporter::CreateModel(const std::string& fileName)
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices);
 
-		const auto mesh = scene->mMeshes[0];
+		//const auto mesh = scene->mMeshes[0];
 
 		std::string fstring(fileName);
 
@@ -51,22 +52,20 @@ Mesh* ModelImporter::CreateModel(const std::string& fileName)
 
 
 
-		Texture* texture = nullptr;
+		//Texture* texture = nullptr;
 
 
-		VertexLayout vLayout;
-
-
-		if (mesh->HasPositions())
-		{
-			// Add Vector3 to the dynamic vertex layout
-			vLayout.Append<VertexLayout::ElementType::Pos3D>();
-		}
-		if (mesh->HasNormals())
-		{
-			// Add Vector3 to the dynamic vertex layout
-			vLayout.Append<VertexLayout::ElementType::Normal>();
-		}
+		//VertexLayout vLayout;
+		//if (mesh->HasPositions())
+		//{
+		//	// Add Vector3 to the dynamic vertex layout
+		//	vLayout.Append<VertexLayout::ElementType::Pos3D>();
+		//}
+		//if (mesh->HasNormals())
+		//{
+		//	// Add Vector3 to the dynamic vertex layout
+		//	vLayout.Append<VertexLayout::ElementType::Normal>();
+		//}
 
 		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 		{
@@ -76,101 +75,115 @@ Mesh* ModelImporter::CreateModel(const std::string& fileName)
 			if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 			{
 				// Add Vector2 to the dynamic vertex layout
-				vLayout.Append<VertexLayout::ElementType::Texture2D>();
+				//vLayout.Append<VertexLayout::ElementType::Texture2D>();
 
 				if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &path))
 				{
 					std::string p(path.data);
 
 					// create a texture
-					texture = AssetManager::Get()->LoadTexture(dir + p);
+					Texture* texture = AssetManager::Get()->LoadTexture(dir + p);
+					textureArray.push_back(texture);
 				}
 			}
 		}
-		VBuffer vBuffer(std::move(vLayout));
+		//VBuffer vBuffer(std::move(vLayout));
 
-		//std::vector<VertexPosNormUV> vertices;
-		//vertices.reserve(mesh->mNumVertices);
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		for (int index = 0; index < scene->mNumMeshes; index++)
 		{
-			const auto textureVec = &mesh->mTextureCoords[0][i];
+			const auto mesh = scene->mMeshes[index];
 
-			Vector3 pos = *reinterpret_cast<Vector3*>(&mesh->mVertices[i]);
-			Vector3 norm = *reinterpret_cast<Vector3*>(&mesh->mNormals[i]);
-
-			/*Vector3 pos = Vector3(
-			mesh->mVertices[i].x,
-			mesh->mVertices[i].y,
-			mesh->mVertices[i].z);*/
-
-			/*Vector3 norm = Vector3(
-			mesh->mNormals[i].x,
-			mesh->mNormals[i].y,
-			mesh->mNormals[i].z);*/
-
-			Vector2 uv;
-
-			if (mesh->HasTextureCoords(0))
+			std::vector<VertexPosNormUV> vertices;
+			vertices.reserve(mesh->mNumVertices);
+			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 			{
-				uv = Vector2(textureVec->x, 1 - textureVec->y);
+				const auto textureVec = &mesh->mTextureCoords[0][i];
+
+				Vector3 pos = *reinterpret_cast<Vector3*>(&mesh->mVertices[i]);
+				Vector3 norm = *reinterpret_cast<Vector3*>(&mesh->mNormals[i]);
+
+				/*Vector3 pos = Vector3(
+				mesh->mVertices[i].x,
+				mesh->mVertices[i].y,
+				mesh->mVertices[i].z);
+				Vector3 norm = Vector3(
+				mesh->mNormals[i].x,
+				mesh->mNormals[i].y,
+				mesh->mNormals[i].z);*/
+
+				Vector2 uv;
+
+				if (mesh->HasTextureCoords(0))
+				{
+					uv = Vector2(textureVec->x, 1 - textureVec->y);
+				}
+
+				VertexPosNormUV v = {};
+				v.pos = pos;
+				v.normal = norm;
+				v.uv = uv;
+
+				vertices.push_back(v);
+
+				//vBuffer.EmplaceBack(pos, norm, uv);
 			}
 
-			VertexPosNormUV v = {};
-			v.pos = pos;
-			v.normal = norm;
-			v.uv = uv;
+			std::vector<uint16_t> indices;
+			indices.reserve(size_t(mesh->mNumFaces * 3));
+			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+			{
+				const auto& face = mesh->mFaces[i];
 
-			//vertices.push_back(v);
+				indices.push_back(face.mIndices[0]);
+				indices.push_back(face.mIndices[1]);
+				indices.push_back(face.mIndices[2]);
+			}
 
-			vBuffer.EmplaceBack(pos, norm, uv);
+			/*newMesh = new Mesh(new VertexBuffer(
+				vBuffer.GetData(),
+				vBuffer.SizeBytes(),
+				vBuffer.GetLayout().Size(),
+				indices.data(),
+				indices.size() * sizeof(uint16_t),
+				sizeof(uint16_t)),
+				AssetManager::Get()->GetMaterial("Phong"));*/
+
+			Mesh* newMesh = new Mesh(new VertexBuffer(
+				vertices.data(),
+				vertices.size() * sizeof(VertexPosNormUV),
+				sizeof(VertexPosNormUV),
+				indices.data(),
+				indices.size() * sizeof(uint16_t),
+				sizeof(uint16_t)),
+				AssetManager::Get()->GetMaterial("Phong"));
+
+			newMesh->GetMaterial()->SetTexture(0, textureArray[0]);
+
+			AssetManager::Get()->SaveMesh(name + std::to_string(index), newMesh);
+
+			/*obj = new RenderObj(new VertexBuffer(
+				vBuffer.GetData(),
+				vBuffer.SizeBytes(),
+				vBuffer.GetLayout().Size(),
+				indices.data(),
+				indices.size() * sizeof(uint16_t),
+				sizeof(uint16_t)));*/
+
+			/*obj = new RenderObj(new VertexBuffer(
+				vertices.data(),
+				vertices.size() * sizeof(VertexPosNormUV),
+				sizeof(VertexPosNormUV),
+				indices.data(),
+				indices.size() * sizeof(uint16_t),
+				sizeof(uint16_t)));*/
+
+			//obj->SetMaterial(AssetManager::Get()->GetMaterial("Phong"));
+			//obj->GetMaterial()->SetTexture(0, texture);
+
+			meshArray.push_back(newMesh);
 		}
-
-		std::vector<uint16_t> indices;
-		indices.reserve(size_t(mesh->mNumFaces * 3));
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-		{
-			const auto& face = mesh->mFaces[i];
-
-			indices.push_back(face.mIndices[0]);
-			indices.push_back(face.mIndices[1]);
-			indices.push_back(face.mIndices[2]);
-		}
-
-		newMesh = new Mesh(new VertexBuffer(
-			vBuffer.GetData(),
-			vBuffer.SizeBytes(),
-			vBuffer.GetLayout().Size(),
-			indices.data(),
-			indices.size() * sizeof(uint16_t),
-			sizeof(uint16_t)), 
-			AssetManager::Get()->GetMaterial("Phong"));
-
-		newMesh->GetMaterial()->SetTexture(0, texture);
-		
-		AssetManager::Get()->SaveMesh(name, newMesh);
-
-		/*obj = new RenderObj(new VertexBuffer(
-			vBuffer.GetData(),
-			vBuffer.SizeBytes(),
-			vBuffer.GetLayout().Size(),
-			indices.data(),
-			indices.size() * sizeof(uint16_t),
-			sizeof(uint16_t)));*/
-
-		/*obj = new RenderObj(new VertexBuffer(
-			vertices.data(),
-			vertices.size() * sizeof(VertexPosNormUV),
-			sizeof(VertexPosNormUV),
-			indices.data(),
-			indices.size() * sizeof(uint16_t),
-			sizeof(uint16_t)));*/
-
-		//obj->SetMaterial(AssetManager::Get()->GetMaterial("Phong"));
-
-		//obj->GetMaterial()->SetTexture(0, texture);
-
 		fin.close();
 	}
 
-	return newMesh;
+	return meshArray;
 }

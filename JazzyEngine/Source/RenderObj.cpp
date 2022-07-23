@@ -38,6 +38,26 @@ RenderObj::RenderObj(Mesh* mesh)
 		D3D11_USAGE_DYNAMIC);
 }
 
+RenderObj::RenderObj(const std::vector<Mesh*>& meshes)
+	: mMesh(nullptr)
+	, mMeshes(meshes)
+	, pos(Vector3::Zero)
+	, scale(1.0f)
+	, rotation(0.0f)
+	, pitch(0.0f)
+	, yaw(0.0f)
+	, roll(0.0f)
+	, forward(Vector3::Zero)
+{
+	mConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
+		&mObjConsts,
+		sizeof(mObjConsts),
+		0,
+		D3D11_BIND_CONSTANT_BUFFER,
+		D3D11_CPU_ACCESS_WRITE,
+		D3D11_USAGE_DYNAMIC);
+}
+
 RenderObj::~RenderObj()
 {
 	if (mConstBuffer)
@@ -70,5 +90,15 @@ void RenderObj::Draw()
 	// Bind constant buffer to vertex shader
 	graphics->GetContext()->VSSetConstantBuffers(Graphics::ConstantBuffer::CONSTANT_BUFFER_RENDEROBJ, 1, &mConstBuffer);
 
-	mMesh->Draw();
+	if (mMeshes.empty() && mMesh)
+	{
+		mMesh->Draw();
+	}
+	else
+	{
+		for (auto m : mMeshes)
+		{
+			m->Draw();
+		}
+	}
 }

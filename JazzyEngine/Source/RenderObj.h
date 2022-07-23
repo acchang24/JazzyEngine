@@ -16,6 +16,7 @@ class RenderObj
 public:
 	RenderObj();
 	RenderObj(Mesh* mesh);
+	RenderObj(const std::vector<Mesh*>& meshes);
 	virtual ~RenderObj();
 	RenderObj(const RenderObj&) = delete;
 	RenderObj& operator=(const RenderObj&) = delete;
@@ -40,6 +41,7 @@ public:
 
 protected:
 	Mesh* mMesh;
+	std::vector<Mesh*> mMeshes;
 
 	// Constant object buffer
 	ID3D11Buffer* mConstBuffer;

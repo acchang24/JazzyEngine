@@ -148,7 +148,6 @@ public:
 	~Cube();
 
 	void Update(float deltaTime) override;
-	void Draw() override;
 
 private:
 	float phi = 0.0f;

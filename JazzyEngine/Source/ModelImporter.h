@@ -12,7 +12,7 @@ public:
 	ModelImporter(const ModelImporter&) = delete;
 	ModelImporter& operator=(const ModelImporter&) = delete;
 
-	Mesh* CreateModel(const std::string& fileName);
+	std::vector<Mesh*> CreateModel(const std::string& fileName);
 private:
 };
 
