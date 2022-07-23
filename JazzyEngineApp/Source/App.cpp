@@ -18,8 +18,7 @@
 #define WINHEIGHT 900
 
 App::App()
-	: //testCube(nullptr)
-	  mCamera(nullptr)
+	: mCamera(nullptr)
 	, mAssetManager(nullptr)
 	, lightConstBuffer(nullptr)
 {
@@ -60,13 +59,11 @@ void App::f()
 
 void App::Init()
 {
-	//f();
-
 	mCamera = new Camera();
 
 	mAssetManager = new AssetManager();
 
-	mModImp = new ModelImporter();
+	ModelImporter mModImp;
 
 	lightConstBuffer = Graphics::Get()->CreateGraphicsBuffer(
 		&mLightConsts,
@@ -180,19 +177,13 @@ void App::Init()
 
 	LoadMaterials();
 
-	Mesh* squidMesh = mModImp->CreateModel("Assets/Models/Squidward/squidward.obj");
+	Mesh* squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
 	RenderObj* squid = new RenderObj(squidMesh);
 
-	//monke->SetMaterial(mAssetManager->GetMaterial("Phong"));
-	//monke->GetMaterial()->SetShader(mAssetManager->GetShader("Phong"));
-	//monke->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Models/Mr. Krabs/mrkrabs.png"));
 	AddRenderObj(squid);
 	squid->SetScale(0.3f);
 	squid->SetPos(Vector3(0.0f, -1.5f, 1.0f));
 	squid->SetYaw(Math::Pi);
-
-
-
 
 	// Set ambient light
 	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
@@ -201,23 +192,6 @@ void App::Init()
 	light1->lightColor = Vector3(1.0f, 1.0f, 1.0f);
 	light1->innerRadius = 20.0f;
 	light1->outerRadius = 200.0f;
-
-	/*PointLightData* light2 = AllocateLight(Vector3(22.0f,15.0f,25.0f));
-	light2->lightColor = Vector3(0.7f, 0.7f, 0.7f);
-	light2->innerRadius = 20.0f;
-	light2->outerRadius = 50.0f;*/
-
-	// Create a render objects
-	//testCube = new RenderObj(new VertexBuffer(vTexture, sizeof(vTexture), sizeof(VertexPosNormUV), indices, sizeof(indices), sizeof(uint16_t)), mAssetManager->GetMaterial("Phong"));
-	//testCube->SetPos(Vector3(0.0f,0.0f, 1.0f));
-	//testCube->GetMaterial()->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
-	
-	for (int i = 0; i < 100; i++)
-	{
-		Cube* newCube = new Cube();
-		//newCube->SetMaterial(mAssetManager->GetMaterial("ColoredCube"));
-		AddRenderObj(newCube);
-	}
 }
 
 void App::ShutDown()
@@ -236,16 +210,6 @@ void App::ShutDown()
 	if (lightConstBuffer)
 	{
 		lightConstBuffer->Release();
-	}
-
-	/*if (testCube)
-	{
-		delete testCube;
-	}*/
-
-	if (mModImp)
-	{
-		delete mModImp;
 	}
 
 	if (mAssetManager)
@@ -469,9 +433,6 @@ int App::Run()
 
 			ImGui::Text("Camera Type: %s", type.c_str());
 
-			ImGui::Text("Zoom: %f", zoom);
-			//ImGui::Text("Dot angle: %f", dot);
-
 			ImGui::Text("Cam Fwd: %.2f, %.2f, %.2f", mCamera->cameraForward.x, mCamera->cameraForward.y, mCamera->cameraForward.z);
 			ImGui::Text("Cam Rot: yaw = %i, pitch = %i, roll = %i", 
 				(int)Math::ToDegrees(mCamera->yaw) % 360,
@@ -498,8 +459,6 @@ int App::Run()
 			{
 				f = 1.0f;
 				prevSpeed = 1.0f;
-				//testCube->SetPos(Vector3(0.0f, 0.0f, 1.0f));
-				zoom = 1.0f;
 				mCamera->ResetCamera();
 			}
 			
@@ -627,25 +586,10 @@ void App::ProcessInput(float deltaTime)
 
 void App::Update(float deltaTime)
 {
-	angle += Math::Pi * deltaTime;
-
 	for (auto o : renderObjects)
 	{
 		o->Update(deltaTime);
 	}
-
-	/*testCube->SetPitch(angle * 0.25f);
-	testCube->SetRoll(0.0f);
-	testCube->SetYaw(angle);
-
-	testCube->SetPos(Vector3(testCube->GetPos().x, testCube->GetPos().y, zoom));
-
-	Matrix4 transform = Matrix4::CreateScale(testCube->GetScale())
-		* Matrix4::CreateRotationZ(0.0f) * Matrix4::CreateRotationY(angle)
-		* Matrix4::CreateRotationX(0.25f * angle)
-		* Matrix4::CreateTranslation(Vector3(0.0f, 0.0f, zoom + 0.0f));
-		
-	testCube->mObjConsts.modelToWorld = transform;*/
 }
 
 void App::RenderFrame()
@@ -657,7 +601,7 @@ void App::RenderFrame()
 
 	{
 		// clear buffers
-		g->ClearBuffer(0.0f, 0.0f, 0.0f);
+		g->ClearBuffer(0.08f, 0.08f, 0.08f);
 		g->ClearDepthBuffer(g->GetDepthStencilView(), 1.0f);
 	}
 
@@ -666,8 +610,6 @@ void App::RenderFrame()
 	// Upload and bind lighting constants to the pixel shader
 	g->UploadBuffer(lightConstBuffer, &mLightConsts, sizeof(mLightConsts));
 	g->GetContext()->PSSetConstantBuffers(Graphics::CONSTANT_BUFFER_LIGHTING, 1, &lightConstBuffer);
-
-	//testCube->Draw();
 
 	for (auto o : renderObjects)
 	{

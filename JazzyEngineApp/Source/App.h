@@ -47,22 +47,15 @@ public:
 	const Vector3& GetAmbientLight() const;
 
 private:
-	//RenderObj* testCube;
-
 	std::vector<RenderObj*> renderObjects;
 
 	Camera* mCamera;
 
 	AssetManager* mAssetManager;
 
-	ModelImporter* mModImp = nullptr;
-
 	LightingConstants mLightConsts = {};
 
 	ID3D11Buffer* lightConstBuffer;
-
-	float angle = 0.0f;
-	float zoom = 1.0f;
 
 	bool prevCam = false;
 	bool prevSim = false;
