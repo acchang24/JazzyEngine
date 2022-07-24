@@ -177,13 +177,18 @@ void App::Init()
 
 	LoadMaterials();
 
-	//std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
-	std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/nano_textured/nanosuit.obj");
-	RenderObj* squid = new RenderObj(squidMesh);
+	std::vector<Mesh*> nanoMesh = mModImp.CreateModel("Assets/Models/Falco/falco.obj");
+	RenderObj* nano = new RenderObj(nanoMesh);
+	AddRenderObj(nano);
+	nano->SetScale(0.04f);
+	nano->SetPos(Vector3(0.0f, -1.5f, 1.0f));
+	nano->SetYaw(Math::Pi);
 
+	std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
+	RenderObj* squid = new RenderObj(squidMesh);
 	AddRenderObj(squid);
 	squid->SetScale(0.3f);
-	squid->SetPos(Vector3(0.0f, -1.5f, 1.0f));
+	squid->SetPos(Vector3(-5.0f, -1.5f, 1.0f));
 	squid->SetYaw(Math::Pi);
 
 	// Set ambient light
@@ -312,7 +317,6 @@ void App::LoadMaterials()
 
 	Material* phongMat = new Material();
 	phongMat->SetShader(mAssetManager->GetShader("Phong"));
-	//pootisCubeMat->SetTexture(0, mAssetManager->LoadTexture("Assets/Textures/hoovy.jpg"));
 	phongMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
 	phongMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
 	phongMat->SetSpecularPower(100.0f);

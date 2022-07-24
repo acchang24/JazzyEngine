@@ -36,8 +36,6 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices);
 
-		//const auto mesh = scene->mMeshes[0];
-
 		std::string fstring(fileName);
 
 		std::string::size_type index = fileName.find_last_of("/");
@@ -49,11 +47,6 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 		index = name.find_last_of("/");
 
 		name = name.substr(0, index);
-
-
-
-		//Texture* texture = nullptr;
-
 
 		//VertexLayout vLayout;
 		//if (mesh->HasPositions())
@@ -67,31 +60,36 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 		//	vLayout.Append<VertexLayout::ElementType::Normal>();
 		//}
 
-		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
-		{
-			const aiMaterial* material = scene->mMaterials[i];
+		//for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+		//{
+		//	const aiMaterial* material = scene->mMaterials[i];
 
-			aiString path;
-			if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-			{
-				// Add Vector2 to the dynamic vertex layout
-				//vLayout.Append<VertexLayout::ElementType::Texture2D>();
+		//	aiString path;
+		//	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+		//	{
+		//		// Add Vector2 to the dynamic vertex layout
+		//		//vLayout.Append<VertexLayout::ElementType::Texture2D>();
 
-				if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &path))
-				{
-					std::string p(path.data);
+		//		if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &path))
+		//		{
+		//			std::string p(path.data);
 
-					// create a texture
-					Texture* texture = AssetManager::Get()->LoadTexture(dir + p);
-					textureArray.push_back(texture);
-				}
-			}
-		}
+		//			// create a texture
+		//			Texture* texture = AssetManager::Get()->LoadTexture(dir + p);
+		//			textureArray.push_back(texture);
+		//		}
+		//	}
+		//}
 		//VBuffer vBuffer(std::move(vLayout));
 
 		for (int index = 0; index < scene->mNumMeshes; index++)
 		{
-			const auto mesh = scene->mMeshes[index];
+			const aiMesh* mesh = scene->mMeshes[index];
+
+			unsigned int testinggggg = mesh->mMaterialIndex;
+
+
+			aiString meshName = mesh->mName;
 
 			std::vector<VertexPosNormUV> vertices;
 			vertices.reserve(mesh->mNumVertices);
@@ -139,6 +137,30 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 				indices.push_back(face.mIndices[2]);
 			}
 
+			// load diffuse textures
+			Texture* texture = nullptr;
+
+			if (mesh->mMaterialIndex >= 0)
+			{
+				const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+				aiString path;
+				if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+				{
+					// Add Vector2 to the dynamic vertex layout
+					//vLayout.Append<VertexLayout::ElementType::Texture2D>();
+
+					if (AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, 0, &path))
+					{
+						std::string p(path.data);
+
+						// create a texture
+						texture = AssetManager::Get()->LoadTexture(dir + p);
+					}
+				}
+			}
+
+
 			/*newMesh = new Mesh(new VertexBuffer(
 				vBuffer.GetData(),
 				vBuffer.SizeBytes(),
@@ -148,6 +170,13 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 				sizeof(uint16_t)),
 				AssetManager::Get()->GetMaterial("Phong"));*/
 
+			Material* newMat = new Material();
+			newMat->SetShader(AssetManager::Get()->GetShader("Phong"));
+			newMat->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+			newMat->SetSpecularColor(Vector3(1.0f, 1.0f, 1.0f));
+			newMat->SetSpecularPower(100.0f);
+			AssetManager::Get()->SaveMaterial(name + std::to_string(index), newMat);
+
 			Mesh* newMesh = new Mesh(new VertexBuffer(
 				vertices.data(),
 				vertices.size() * sizeof(VertexPosNormUV),
@@ -155,9 +184,9 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 				indices.data(),
 				indices.size() * sizeof(uint16_t),
 				sizeof(uint16_t)),
-				AssetManager::Get()->GetMaterial("Phong"));
+				newMat);
 
-			newMesh->GetMaterial()->SetTexture(0, textureArray[0]);
+			newMesh->GetMaterial()->SetTexture(0, texture);
 
 			AssetManager::Get()->SaveMesh(name + std::to_string(index), newMesh);
 
@@ -184,6 +213,5 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 		}
 		fin.close();
 	}
-
 	return meshArray;
 }
