@@ -177,19 +177,33 @@ void App::Init()
 
 	LoadMaterials();
 
-	std::vector<Mesh*> nanoMesh = mModImp.CreateModel("Assets/Models/Falco/falco.obj");
-	RenderObj* nano = new RenderObj(nanoMesh);
-	AddRenderObj(nano);
-	nano->SetScale(0.04f);
-	nano->SetPos(Vector3(0.0f, -1.5f, 1.0f));
-	nano->SetYaw(Math::Pi);
+	std::vector<Mesh*> portalTurretMesh = mModImp.CreateModel("Assets/Models/PortalTurret/turret_model.dae");
+	RenderObj* portalTurret = new RenderObj(portalTurretMesh);
+	AddRenderObj(portalTurret);
+	portalTurret->SetPos(Vector3(0.0f, -1.5f, 1.0f));
+	portalTurret->SetYaw(Math::Pi);
+	portalTurret->SetPitch(-Math::PiOver2);
+
+	std::vector<Mesh*> falcoMesh = mModImp.CreateModel("Assets/Models/Falco/falco.obj");
+	RenderObj* falco = new RenderObj(falcoMesh);
+	AddRenderObj(falco);
+	falco->SetScale(0.04f);
+	falco->SetPos(Vector3(0.0f, -1.5f, 1.0f));
+	falco->SetYaw(Math::Pi);
 
 	std::vector<Mesh*> squidMesh = mModImp.CreateModel("Assets/Models/Squidward/squidward.obj");
 	RenderObj* squid = new RenderObj(squidMesh);
 	AddRenderObj(squid);
-	squid->SetScale(0.3f);
-	squid->SetPos(Vector3(-5.0f, -1.5f, 1.0f));
+	//squid->SetScale(0.3f);
+	squid->SetPos(Vector3(-8.0f, -1.5f, 1.0f));
 	squid->SetYaw(Math::Pi);
+
+	std::vector<Mesh*> nanoMesh = mModImp.CreateModel("Assets/Models/nano_textured/nanosuit.obj");
+	RenderObj* nano = new RenderObj(nanoMesh);
+	AddRenderObj(nano);
+	//nano->SetScale(0.3f);
+	nano->SetPos(Vector3(8.0f, -1.5f, 1.0f));
+	nano->SetYaw(Math::Pi);
 
 	// Set ambient light
 	SetAmbientLight(Vector3(0.06f,0.06f,0.06f));
@@ -203,6 +217,11 @@ void App::Init()
 	light2->lightColor = Vector3(0.2f, 0.7f, 0.9f);
 	light2->innerRadius = 20.0f;
 	light2->outerRadius = 50.0f;
+
+	PointLightData* light3 = AllocateLight(Vector3(-46.0f, 71.0f, -49.0f));
+	light3->lightColor = Vector3(0.9f, 0.2f, 0.1f);
+	light3->innerRadius = 20.0f;
+	light3->outerRadius = 200.0f;
 }
 
 void App::ShutDown()

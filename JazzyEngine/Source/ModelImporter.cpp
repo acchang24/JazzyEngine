@@ -86,9 +86,6 @@ std::vector<Mesh*> ModelImporter::CreateModel(const std::string& fileName)
 		{
 			const aiMesh* mesh = scene->mMeshes[index];
 
-			unsigned int testinggggg = mesh->mMaterialIndex;
-
-
 			aiString meshName = mesh->mName;
 
 			std::vector<VertexPosNormUV> vertices;
